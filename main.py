@@ -15,6 +15,8 @@ import jieba.posseg as pseg
 reload(sys)
 sys.setdefaultencoding('utf8')
 
+g_film_dict = {}
+
 type = sys.getfilesystemencoding()
 
 class Parser(object):
@@ -67,10 +69,11 @@ class Parser(object):
         film_name = ""
         film_name_val = 0
         for key in parser.film_dict.keys():
-            #print("num:%d name:%s" % (parser.film_dict[key], key))
-            if parser.film_dict[key] > film_name_val:
-                film_name = key
-                film_name_val = parser.film_dict[key]
+            if g_film_dict.has_key(key):
+                #print("num:%d name:%s" % (parser.film_dict[key], key))
+                if parser.film_dict[key] > film_name_val:
+                    film_name = key
+                    film_name_val = parser.film_dict[key]
 
         #print("film name:%s" % (film_name))
         return film_name
@@ -103,6 +106,19 @@ def load_userdict():
     # 默认词典
     jieba.load_userdict("./dict/dict.txt");
 
+def load_film_dict(fname):
+    # 提取电影名称
+    f = open(fname, "r")
+    while True:
+        line = f.readline()
+        if line:
+            film = line.split(' ')[0].strip()
+            g_film_dict[film] = 1
+            #print("film:%s" % (film))
+        else:
+            break
+    f.close()
+
 if __name__ == "__main__":
     # 获取评论文件
     if len(sys.argv) > 1:
@@ -110,6 +126,9 @@ if __name__ == "__main__":
 
     # 加载自定义字典
     load_userdict();
+
+    # 加载电影字典
+    load_film_dict("./dict/film.txt")
 
     # 提取URL并分析数据
     f = open(fname, "r")
