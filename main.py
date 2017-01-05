@@ -12,12 +12,22 @@ import logging
 import urllib2
 import jieba.posseg as pseg
 
+sys.path.append("xlrd")
+import xlrd
+
 reload(sys)
 sys.setdefaultencoding('utf8')
 
 g_film_dict = {}
 
 type = sys.getfilesystemencoding()
+
+# 对EXECL行列值进行转化
+def execl_val_to_str(table, row_idx, col_idx):
+    v = table.row(row_idx)[col_idx].value
+    if type(v) is int or type(v) is float:
+        return str(int(v))
+    return v.encode("utf-8")
 
 class Parser(object):
     # 对象初始化
@@ -29,13 +39,13 @@ class Parser(object):
         self.film_dict = {}
 
     # 提取url中有效信息
-    def parse_url(self, url, title):
+    def parse_url(self, url, iid, title):
         self.url = url
         self.title = title
 
         gid = url.split("/")[3]
         self.gid = gid.split("a")[1]
-        self.iid = url.split("/")[4]
+        self.iid = iid
 
         #print("gid:%s iid:%s" % (self.gid, self.iid))
         return
@@ -56,9 +66,9 @@ class Parser(object):
         return comments
 
     # 分析评论数据
-    def mining(self, url, title):
+    def mining(self, url, iid, title):
         # 提取有效信息
-        self.parse_url(url, title)
+        self.parse_url(url, iid, title)
 
         # 获取评论数据
         comments = self.fetch_comment()
@@ -66,7 +76,7 @@ class Parser(object):
         # 逐行分析评论
         for comment in comments:
             self.parse(comment.strip())
-        film_name = ""
+        film_name = "UNKNOWN"
         film_name_val = 0
         for key in parser.film_dict.keys():
             if g_film_dict.has_key(key):
@@ -121,6 +131,7 @@ def load_film_dict(fname):
 
 if __name__ == "__main__":
     # 获取评论文件
+    fname = "影视－明星.xlsx"
     if len(sys.argv) > 1:
         fname = sys.argv[1]
 
@@ -130,18 +141,30 @@ if __name__ == "__main__":
     # 加载电影字典
     load_film_dict("./dict/film.txt")
 
-    # 提取URL并分析数据
-    f = open(fname, "r")
-    while True:
-        line = f.readline()
-        if line:
-            url = line.split(' ')[0].strip()
-            title = line.split(' ')[1].strip()
+    # 从XLSX中提取有效数据
+    bk = xlrd.open_workbook(fname)
+    if bk is None:
+        print("Open [%s] failed!" % fname)
+        exit(0)
+    table = bk.sheet_by_name(u'今日头条')
+    if table is None:
+        print("Sheet by name failed! fname:%s" % fname)
+        exit(0)
 
-            parser = Parser()
-            film = parser.mining(url, title) # 挖掘信息
+    # 列字段定义
+    COL_URL         = 0 # URL
+    COL_ITEM_ID     = 1 # ITEM ID
+    COL_TITLE       = 2 # 标题
+    COL_FILM_NAME   = 3 # 片名
 
-            print("%s %s %s" % (url, title, film))
-        else:
-            break
-    f.close()
+    for row in xrange(table.nrows):
+        if 0 == row:
+            continue
+        url = table.row(row)[COL_URL].value #execl_val_to_str(table, row, COL_URL) # 获取URL
+        iid = str(int(table.row(row)[COL_ITEM_ID].value)) #execl_val_to_str(table, row, COL_ITEM_ID) # 获取ITEM ID
+        title = table.row(row)[COL_TITLE].value #execl_val_to_str(table, row, COL_TITLE) # 获取标题
+    
+        parser = Parser()
+        film = parser.mining(url, iid, title) # 挖掘信息
+
+        print("%s %s %s %s" % (url, iid, title, film))
