@@ -1,21 +1,12 @@
-#!/usr/bin/env python
-
-import sys, glob
-from distutils.core import setup
+import os
+from setuptools import setup, find_packages
+from xlwt import __VERSION__
 
 DESCRIPTION = (
     'Library to create spreadsheet files compatible with '
     'MS Excel 97/2000/XP/2003 XLS files, '
-    'on any platform, with Python 2.3 to 2.6'
+    'on any platform, with Python 2.6, 2.7, 3.3+'
     )
-
-LONG_DESCRIPTION = """\
-xlwt is a library for generating spreadsheet files that are compatible
-with Excel 97/2000/XP/2003, OpenOffice.org Calc, and Gnumeric. xlwt has
-full support for Unicode. Excel spreadsheets can be generated on any
-platform without needing Excel or a COM server. The only requirement is
-Python 2.3 to 2.6. xlwt is a fork of pyExcelerator.
-"""
 
 CLASSIFIERS = [
     'Operating System :: OS Independent',
@@ -27,35 +18,35 @@ CLASSIFIERS = [
     'Topic :: Office/Business :: Financial :: Spreadsheet',
     'Topic :: Database',
     'Topic :: Internet :: WWW/HTTP :: Dynamic Content :: CGI Tools/Libraries',
+    'Programming Language :: Python :: 2',
+    'Programming Language :: Python :: 2.6',
+    'Programming Language :: Python :: 2.7',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.3',
+    'Programming Language :: Python :: 3.4',
+    'Programming Language :: Python :: 3.5',
     ]
 
 KEYWORDS = (
     'xls excel spreadsheet workbook worksheet pyExcelerator'
     )
 
-SVN_URL = 'https://secure.simplistix.co.uk/svn/xlwt/trunk'
-
-DOWNLOAD_URL = 'http://pypi.python.org/pypi/xlwt'
-
 setup(
-    name = 'xlwt',
-    version = '0.7.2',
-    maintainer = 'John Machin',
-    maintainer_email = 'sjmachin@lexicon.net',
-    url = SVN_URL,
-    download_url = DOWNLOAD_URL,
-    description = DESCRIPTION,
-    long_description = LONG_DESCRIPTION,
-    license = 'BSD',
-    platforms = 'Platform Independent',
-    packages = ['xlwt'],
-    keywords = KEYWORDS,
-    classifiers = CLASSIFIERS,
-    package_data = {
-        'xlwt': [
-            'doc/*.*',
-            'examples/*.*',
-            'tests/*.*',
-            ],
-        },
-    )
+    name='xlwt',
+    version=__VERSION__,
+    maintainer='John Machin',
+    maintainer_email='sjmachin@lexicon.net',
+    url='http://www.python-excel.org/',
+    download_url='http://pypi.python.org/pypi/xlwt',
+    description=DESCRIPTION,
+    long_description=open(os.path.join(
+        os.path.dirname(__file__), 'README.rst')
+    ).read(),
+    license='BSD',
+    platforms='Platform Independent',
+    keywords=KEYWORDS,
+    classifiers=CLASSIFIERS,
+    packages=find_packages(),
+    zip_safe=False,
+    include_package_data=True
+)

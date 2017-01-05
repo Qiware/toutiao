@@ -1,7 +1,7 @@
 # -*- coding: cp1252 -*-
 
 ##
-# <p> Portions copyright © 2005-2013 Stephen John Machin, Lingfo Pty Ltd</p>
+# <p> Portions copyright Â© 2005-2013 Stephen John Machin, Lingfo Pty Ltd</p>
 # <p>This module is part of the xlrd package, which is released under a BSD-style licence.</p>
 ##
 
@@ -138,6 +138,8 @@ class Sheet(BaseObject):
     # List of address ranges of cells which have been merged.
     # These are set up in Excel by Format > Cells > Alignment, then ticking
     # the "Merge cells" box.
+    # <br> Note that the upper limits are exclusive: i.e. <tt>[2, 3, 7, 9]</tt> only
+    # spans two cells.
     # <br> -- New in version 0.6.1. Extracted only if open_workbook(formatting_info=True).
     # <br>How to deconstruct the list:
     # <pre>
@@ -364,8 +366,8 @@ class Sheet(BaseObject):
         self.cooked_normal_view_mag_factor = 100
 
         # Values (if any) actually stored on the XLS file
-        self.cached_page_break_preview_mag_factor = None # from WINDOW2 record
-        self.cached_normal_view_mag_factor = None # from WINDOW2 record
+        self.cached_page_break_preview_mag_factor = 0  # default (60%), from WINDOW2 record
+        self.cached_normal_view_mag_factor = 0  # default (100%), from WINDOW2 record
         self.scl_mag_factor = None # from SCL record
 
         self._ixfe = None # BIFF2 only
@@ -456,6 +458,11 @@ class Sheet(BaseObject):
             self.cell(rowx, colx)
             for colx in xrange(len(self._cell_values[rowx]))
             ]
+
+    ##
+    # Returns a generator for iterating through each row.
+    def get_rows(self):
+        return (self.row(index) for index in range(self.nrows))
 
     ##
     # Returns a slice of the types
@@ -572,11 +579,12 @@ class Sheet(BaseObject):
                 if chi > nc: nc = chi
             if nc > self.ncols:
                 self.ncols = nc
+                self._first_full_rowx = -2
             if nr > self.nrows:
                 # we put one empty cell at (nr-1,0) to make sure
                 # we have the right number of rows. The ragged rows
                 # will sort out the rest if needed.
-                self.put_cell(nr-1, 0, XL_CELL_EMPTY, '', -1)
+                self.put_cell(nr-1, 0, XL_CELL_EMPTY, UNICODE_LITERAL(''), -1)
         if self.verbosity >= 1 \
         and (self.nrows != self._dimnrows or self.ncols != self._dimncols):
             fprintf(self.logfile,
@@ -605,7 +613,7 @@ class Sheet(BaseObject):
                 rlen = len(trow)
                 nextra = ncols - rlen
                 if nextra > 0:
-                    s_cell_values[rowx][rlen:] = [''] * nextra
+                    s_cell_values[rowx][rlen:] = [UNICODE_LITERAL('')] * nextra
                     trow[rlen:] = self.bt * nextra
                     if s_fmt_info:
                         s_cell_xf_indexes[rowx][rlen:] = self.bf * nextra
@@ -654,11 +662,11 @@ class Sheet(BaseObject):
                 num_empty += 1
                 # self._put_cell_row_widenings += 1
                 # types_row.extend(self.bt * num_empty)
-                # values_row.extend([''] * num_empty)
+                # values_row.extend([UNICODE_LITERAL('')] * num_empty)
                 # if fmt_info:
                 #     fmt_row.extend(self.bf * num_empty)
                 types_row[ltr:] = self.bt * num_empty
-                values_row[ltr:] = [''] * num_empty
+                values_row[ltr:] = [UNICODE_LITERAL('')] * num_empty
                 if fmt_info:
                     fmt_row[ltr:] = self.bf * num_empty
             types_row[colx] = ctype
@@ -712,7 +720,7 @@ class Sheet(BaseObject):
                     trow.extend(self.bt * nextra)
                     if self.formatting_info:
                         self._cell_xf_indexes[rowx].extend(self.bf * nextra)
-                    self._cell_values[rowx].extend([''] * nextra)
+                    self._cell_values[rowx].extend([UNICODE_LITERAL('')] * nextra)
             else:
                 scta = self._cell_types.append
                 scva = self._cell_values.append
@@ -724,7 +732,7 @@ class Sheet(BaseObject):
                 for _unused in xrange(self.nrows, nr):
                     # self._put_cell_rows_appended += 1
                     scta(bt * nc)
-                    scva([''] * nc)
+                    scva([UNICODE_LITERAL('')] * nc)
                     if fmt_info:
                         scxa(bf * nc)
                 self.nrows = nr
@@ -1246,8 +1254,6 @@ class Sheet(BaseObject):
                     self.gridline_colour_rgb = unpack("<BBB", data[6:9])
                     self.gridline_colour_index = nearest_colour_index(
                         self.book.colour_map, self.gridline_colour_rgb, debug=0)
-                    self.cached_page_break_preview_mag_factor = 0 # default (60%)
-                    self.cached_normal_view_mag_factor = 0 # default (100%)
                 # options -- Bit, Mask, Contents:
                 # 0 0001H 0 = Show formula results 1 = Show formulas
                 # 1 0002H 0 = Do not show grid lines 1 = Show grid lines
@@ -1458,8 +1464,6 @@ class Sheet(BaseObject):
                     self.gridline_colour_rgb = unpack("<BBB", data[10:13])
                     self.gridline_colour_index = nearest_colour_index(
                         self.book.colour_map, self.gridline_colour_rgb, debug=0)
-                    self.cached_page_break_preview_mag_factor = 0 # default (60%)
-                    self.cached_normal_view_mag_factor = 0 # default (100%)
             else:
                 # if DEBUG: print "SHEET.READ: Unhandled record type %02x %d bytes %r" % (rc, data_len, data)
                 pass
@@ -1532,7 +1536,7 @@ class Sheet(BaseObject):
             else:
                 self.cooked_normal_view_mag_factor = self.scl_mag_factor
             zoom = self.cached_page_break_preview_mag_factor
-            if zoom == 0:
+            if not zoom:
                 # VALID, defaults to 60
                 zoom = 60
             elif not (10 <= zoom <= 400):
@@ -2261,10 +2265,7 @@ class Cell(BaseObject):
         else:
             return "%s:%r (XF:%r)" % (ctype_text[self.ctype], self.value, self.xf_index)
 
-##
-# There is one and only one instance of an empty cell -- it's a singleton. This is it.
-# You may use a test like "acell is empty_cell".
-empty_cell = Cell(XL_CELL_EMPTY, '')
+empty_cell = Cell(XL_CELL_EMPTY, UNICODE_LITERAL(''))
 
 ##### =============== Colinfo and Rowinfo ============================== #####
 

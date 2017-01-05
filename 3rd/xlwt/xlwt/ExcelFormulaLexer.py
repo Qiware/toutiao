@@ -1,10 +1,9 @@
+from __future__ import print_function
 # -*- coding: windows-1252 -*-
 
-import sys
-from antlr import EOF, CommonToken as Tok, TokenStream, TokenStreamException
-import struct
-import ExcelFormulaParser
-from re import compile as recompile, match, LOCALE, UNICODE, IGNORECASE, VERBOSE
+from .antlr import EOF, CommonToken as Tok, TokenStream, TokenStreamException
+from . import ExcelFormulaParser
+from re import compile as recompile, IGNORECASE, VERBOSE
 
 
 int_const_pattern = r"\d+\b"
@@ -51,7 +50,7 @@ pattern_type_tuples = (
 
 _re = recompile(
     '(' + ')|('.join([i[0] for i in pattern_type_tuples]) + ')',
-    VERBOSE+LOCALE+IGNORECASE)
+    VERBOSE+IGNORECASE)
 
 _toktype = [None] + [i[1] for i in pattern_type_tuples]
 # need dummy at start because re.MatchObject.lastindex counts from 1
@@ -123,6 +122,6 @@ class Lexer(TokenStream):
 if __name__ == '__main__':
     try:
         for t in Lexer(""" 1.23 456 "abcd" R2C2 a1 iv65536 true false if choose a_name 'qname' <> >= <= """):
-            print t
-    except TokenStreamException, e:
-        print "error:", e
+            print(t)
+    except TokenStreamException as e:
+        print("error:", e)

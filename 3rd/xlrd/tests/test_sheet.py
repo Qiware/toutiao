@@ -2,11 +2,13 @@
 
 from unittest import TestCase
 
-import sys
 import os
+import sys
+import types
 import unittest
 
 import xlrd
+from xlrd.timemachine import xrange
 
 from .base import from_this_dir
 
@@ -16,6 +18,7 @@ NCOLS = 13
 
 ROW_ERR = NROWS + 10
 COL_ERR = NCOLS + 10
+
 
 class TestSheet(TestCase):
 
@@ -92,6 +95,12 @@ class TestSheet(TestCase):
         row = sheet.row(0)
         self.assertEqual(len(row), NCOLS)
 
+    def test_get_rows(self):
+        sheet = self.book.sheet_by_index(SHEETINDEX)
+        rows = sheet.get_rows()
+        self.assertTrue(isinstance(rows, types.GeneratorType), True)
+        self.assertEqual(len(list(rows)), sheet.nrows)
+
     def test_col_slice(self):
         sheet = self.book.sheet_by_index(SHEETINDEX)
         self.check_col_slice(sheet.col_slice)
@@ -116,6 +125,7 @@ class TestSheet(TestCase):
         sheet = self.book.sheet_by_index(SHEETINDEX)
         self.check_col_slice(sheet.row_values)
 
+
 class TestSheetRagged(TestCase):
     
     def test_read_ragged(self):
@@ -126,3 +136,12 @@ class TestSheetRagged(TestCase):
         self.assertEqual(sheet.row_len(2), 1)
         self.assertEqual(sheet.row_len(3), 4)
         self.assertEqual(sheet.row_len(4), 4)
+
+
+class TestMergedCells(TestCase):
+
+    def test_tidy_dimensions(self):
+        book = xlrd.open_workbook(from_this_dir('merged_cells.xlsx'))
+        for sheet in book.sheets():
+            for rowx in xrange(sheet.nrows):
+                self.assertEqual(sheet.row_len(rowx), sheet.ncols)

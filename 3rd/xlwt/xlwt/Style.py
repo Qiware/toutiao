@@ -1,7 +1,9 @@
+from __future__ import print_function
 # -*- coding: windows-1252 -*-
 
-import Formatting
-from BIFFRecords import *
+from . import Formatting
+from .BIFFRecords import NumberFormatRecord, XFRecord, StyleRecord
+from .compat import basestring, xrange
 
 FIRST_USER_DEFINED_NUM_FORMAT_IDX = 164
 
@@ -24,10 +26,10 @@ class StyleCollection(object):
             '0.00',
             '#,##0',
             '#,##0.00',
-            '"$"#,##0_);("$"#,##',
-            '"$"#,##0_);[Red]("$"#,##',
-            '"$"#,##0.00_);("$"#,##',
-            '"$"#,##0.00_);[Red]("$"#,##',
+            '"$"#,##0_);("$"#,##0)',
+            '"$"#,##0_);[Red]("$"#,##0)',
+            '"$"#,##0.00_);("$"#,##0.00)',
+            '"$"#,##0.00_);[Red]("$"#,##0.00)',
             '0%',
             '0.00%',
             '0.00E+00',
@@ -149,9 +151,36 @@ class StyleCollection(object):
             raise ValueError("More than 4094 XFs (styles)")
 
         return xf, xf_index
+        
+    def add_font(self, font):
+        return self._add_font(font)
+        
+    def _add_font(self, font):
+        if font in self._font_id2x:
+            font_idx = self._font_id2x[font]
+            self.stats[0] += 1
+        elif self.style_compression:
+            search_key = font._search_key()
+            font_idx = self._font_val2x.get(search_key)
+            if font_idx is not None:
+                self._font_id2x[font] = font_idx
+                self.stats[1] += 1
+            else:
+                font_idx = len(self._font_x2id) + 1 # Why plus 1? Font 4 is missing
+                self._font_id2x[font] = font_idx
+                self._font_val2x[search_key] = font_idx
+                self._font_x2id[font_idx] = font
+                self.stats[2] += 1
+        else:
+            font_idx = len(self._font_id2x) + 1
+            self._font_id2x[font] = font_idx
+            self.stats[2] += 1
+            
+        return font_idx
+
 
     def get_biff_data(self):
-        result = ''
+        result = b''
         result += self._all_fonts()
         result += self._all_num_formats()
         result += self._all_cell_styles()
@@ -159,18 +188,17 @@ class StyleCollection(object):
         return result
 
     def _all_fonts(self):
-        result = ''
+        result = b''
         if self.style_compression:
-            alist = self._font_x2id.items()
+            fonts = self._font_x2id.items()
         else:
-            alist = [(x, o) for o, x in self._font_id2x.items()]
-        alist.sort()
-        for font_idx, font in alist:
+            fonts = [(x, o) for o, x in self._font_id2x.items()]
+        for font_idx, font in sorted(fonts):
             result += font.get_biff_record().get()
         return result
 
     def _all_num_formats(self):
-        result = ''
+        result = b''
         alist = [
             (v, k)
             for k, v in self._num_formats.items()
@@ -182,15 +210,14 @@ class StyleCollection(object):
         return result
 
     def _all_cell_styles(self):
-        result = ''
+        result = b''
         for i in range(0, 16):
             result += XFRecord(self._default_xf, 'style').get()
         if self.style_compression == 2:
-            alist = self._xf_x2id.items()
+            styles = self._xf_x2id.items()
         else:
-            alist = [(x, o) for o, x in self._xf_id2x.items()]
-        alist.sort()
-        for xf_idx, xf in alist:
+            styles = [(x, o) for o, x in self._xf_id2x.items()]
+        for xf_idx, xf in sorted(styles):
             result += XFRecord(xf).get()
         return result
 
@@ -344,6 +371,92 @@ for _line in _colour_map_text.splitlines():
         colour_map[_name.replace('gray', 'grey')] = _num
 del _colour_map_text, _line, _name, _num
 
+def add_palette_colour(colour_str, colour_index):
+    if not (8 <= colour_index <= 63):
+        raise Exception("add_palette_colour: colour_index (%d) not in range(8, 64)" % 
+                (colour_index))
+    colour_map[colour_str] = colour_index
+
+# user-defined palette defines 56 RGB colors from entry 8 - 64
+#excel_default_palette_b8 = [ # (red, green, blue)
+#    (  0,  0,  0), (255,255,255), (255,  0,  0), (  0,255,  0),
+#    (  0,  0,255), (255,255,  0), (255,  0,255), (  0,255,255),
+#    (128,  0,  0), (  0,128,  0), (  0,  0,128), (128,128,  0),
+#    (128,  0,128), (  0,128,128), (192,192,192), (128,128,128),
+#    (153,153,255), (153, 51,102), (255,255,204), (204,255,255),
+#    (102,  0,102), (255,128,128), (  0,102,204), (204,204,255),
+#    (  0,  0,128), (255,  0,255), (255,255,  0), (  0,255,255),
+#    (128,  0,128), (128,  0,  0), (  0,128,128), (  0,  0,255),
+#    (  0,204,255), (204,255,255), (204,255,204), (255,255,153),
+#    (153,204,255), (255,153,204), (204,153,255), (255,204,153),
+#    ( 51,102,255), ( 51,204,204), (153,204,  0), (255,204,  0),
+#    (255,153,  0), (255,102,  0), (102,102,153), (150,150,150),
+#    (  0, 51,102), ( 51,153,102), (  0, 51,  0), ( 51, 51,  0),
+#    (153, 51,  0), (153, 51,102), ( 51, 51,153), ( 51, 51, 51),
+#    ]
+
+# Default colour table for BIFF8 copied from 
+# OpenOffice.org's Documentation of the Microsoft Excel File Format, Excel Version 2003
+# Note palette has LSB padded with 2 bytes 0x00
+excel_default_palette_b8 = ( 
+0x00000000, 
+0xFFFFFF00, 
+0xFF000000, 
+0x00FF0000, 
+0x0000FF00, 
+0xFFFF0000, 
+0xFF00FF00, 
+0x00FFFF00,
+0x80000000, 
+0x00800000, 
+0x00008000, 
+0x80800000, 
+0x80008000, 
+0x00808000, 
+0xC0C0C000, 
+0x80808000, 
+0x9999FF00, 
+0x99336600, 
+0xFFFFCC00, 
+0xCCFFFF00, 
+0x66006600, 
+0xFF808000, 
+0x0066CC00, 
+0xCCCCFF00, 
+0x00008000, 
+0xFF00FF00, 
+0xFFFF0000, 
+0x00FFFF00, 
+0x80008000, 
+0x80000000, 
+0x00808000, 
+0x0000FF00, 
+0x00CCFF00, 
+0xCCFFFF00, 
+0xCCFFCC00, 
+0xFFFF9900, 
+0x99CCFF00, 
+0xFF99CC00, 
+0xCC99FF00, 
+0xFFCC9900, 
+0x3366FF00, 
+0x33CCCC00, 
+0x99CC0000, 
+0xFFCC0000, 
+0xFF990000, 
+0xFF660000, 
+0x66669900, 
+0x96969600, 
+0x00336600, 
+0x33996600, 
+0x00330000, 
+0x33330000, 
+0x99330000, 
+0x99336600, 
+0x33339900, 
+0x33333300)
+
+assert len(excel_default_palette_b8) == 56
 
 pattern_map = {
     # Text values for pattern.pattern
@@ -455,9 +568,9 @@ xf_dict = {
         'bottom_color':     'bottom_colour',
         'left_color':       'left_colour',
         'right_color':      'right_colour',
-        'diag_color':       'diag-colour',
-        'need_diag_1':  bool_map,
-        'need_diag_2':  bool_map,
+        'diag_color':       'diag_colour',
+        'need_diag1':  bool_map,
+        'need_diag2':  bool_map,
         },
     'font': {
         'bold': bool_map,
@@ -578,11 +691,40 @@ def _parse_strg_to_obj(strg, obj, parse_dict,
                 orig = getattr(section_obj, k)
             except AttributeError:
                 raise EasyXFAuthorError('%s.%s in dictionary but not in supplied object' % (section, k))
-            if debug: print "+++ %s.%s = %r # %s; was %r" % (section, k, value, v, orig)
+            if debug: print("+++ %s.%s = %r # %s; was %r" % (section, k, value, v, orig))
             setattr(section_obj, k, value)
 
 def easyxf(strg_to_parse="", num_format_str=None,
-    field_sep=",", line_sep=";", intro_sep=":", esc_char="\\", debug=False):
+           field_sep=",", line_sep=";", intro_sep=":", esc_char="\\", debug=False):
+    """
+    This function is used to create and configure
+    :class:`XFStyle` objects for use with (for example) the
+    :meth:`Worksheet.write` method.
+
+    It takes a string to be parsed to obtain attribute values for
+    :class:`Alignment`, :class:`Borders`, :class:`Font`, :class:`Pattern` and
+    :class:`Protection` objects.
+
+    Refer to the examples in the file `examples/xlwt_easyxf_simple_demo.py`
+    and to the `xf_dict` dictionary in :mod:`xlwt.Style`.
+
+    Various synonyms including color/colour, center/centre and gray/grey are
+    allowed. Case is irrelevant (except maybe in font names). ``-`` may be used
+    instead of ``_``.
+
+    Example: ``font: bold on; align: wrap on, vert centre, horiz center``
+
+    :param num_format_str:
+
+      To get the "number format string" of an existing
+      cell whose format you want to reproduce, select the cell and click on
+      Format/Cells/Number/Custom. Otherwise, refer to Excel help.
+
+      Examples: ``"#,##0.00"``, ``"dd/mm/yyyy"``
+
+    :return: An :class:`XFstyle` object.
+
+    """
     xfobj = XFStyle()
     if num_format_str is not None:
         xfobj.num_format_str = num_format_str
@@ -590,3 +732,10 @@ def easyxf(strg_to_parse="", num_format_str=None,
         _parse_strg_to_obj(strg_to_parse, xfobj, xf_dict,
             field_sep=field_sep, line_sep=line_sep, intro_sep=intro_sep, esc_char=esc_char, debug=debug)
     return xfobj
+
+def easyfont(strg_to_parse="", field_sep=",", esc_char="\\", debug=False):
+    xfobj = XFStyle()
+    if strg_to_parse:
+        _parse_strg_to_obj("font: " + strg_to_parse, xfobj, xf_dict,
+            field_sep=field_sep, line_sep=";", intro_sep=":", esc_char=esc_char, debug=debug)
+    return xfobj.font

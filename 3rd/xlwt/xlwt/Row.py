@@ -1,11 +1,14 @@
 # -*- coding: windows-1252 -*-
 
-import BIFFRecords
-import Style
-from Cell import StrCell, BlankCell, NumberCell, FormulaCell, MulBlankCell, BooleanCell, ErrorCell, \
+from . import BIFFRecords
+from . import Style
+from .Cell import StrCell, BlankCell, NumberCell, FormulaCell, MulBlankCell, BooleanCell, ErrorCell, \
     _get_cells_biff_data_mul
-import ExcelFormula
+from . import ExcelFormula
 import datetime as dt
+from .Formatting import Font
+from .compat import basestring, xrange, int_types, iteritems
+
 try:
     from decimal import Decimal
 except ImportError:
@@ -36,8 +39,8 @@ class Row(object):
                  "space_below"]
 
     def __init__(self, rowx, parent_sheet):
-        if not (isinstance(rowx, int) and 0 <= rowx <= 65535):
-            raise ValueError("row index (%r) not an int in range(65536)" % rowx)
+        if not (isinstance(rowx, int_types) and 0 <= rowx <= 65535):
+            raise ValueError("row index was %r, not allowed by .xls format" % rowx)
         self.__idx = rowx
         self.__parent = parent_sheet
         self.__parent_wb = parent_sheet.get_parent()
@@ -84,20 +87,27 @@ class Row(object):
             if iarg > sheet.last_used_col:
                 sheet.last_used_col = iarg
 
-    def __excel_date_dt(self, date):
-        if isinstance(date, dt.date) and (not isinstance(date, dt.datetime)):
-            epoch = dt.date(1899, 12, 31)
-        elif isinstance(date, dt.time):
+    def __excel_date_dt(self, date): 
+        adj = False
+        if isinstance(date, dt.date):
+            if self.__parent_wb.dates_1904:
+                epoch_tuple = (1904, 1, 1)
+            else:
+                epoch_tuple = (1899, 12, 31)
+                adj = True
+            if isinstance(date, dt.datetime):
+                epoch = dt.datetime(*epoch_tuple)
+            else:
+                epoch = dt.date(*epoch_tuple)
+        else: # it's a datetime.time instance
             date = dt.datetime.combine(dt.datetime(1900, 1, 1), date)
-            epoch = dt.datetime(1900, 1, 1, 0, 0, 0)
-        else:
-            epoch = dt.datetime(1899, 12, 31, 0, 0, 0)
+            epoch = dt.datetime(1900, 1, 1)
         delta = date - epoch
-        xldate = delta.days + float(delta.seconds) / (24*60*60)
+        xldate = delta.days + delta.seconds / 86400.0                      
         # Add a day for Excel's missing leap day in 1900
-        if xldate > 59:
+        if adj and xldate > 59:
             xldate += 1
-        return xldate
+        return xldate    
 
     def get_height_in_pixels(self):
         return self.__height_in_pixels
@@ -160,7 +170,7 @@ class Row(object):
             self.insert_cell(col_index, None)
 
     def get_cells_biff_data(self):
-        cell_items = [item for item in self.__cells.iteritems() if item[1] is not None]
+        cell_items = [item for item in iteritems(self.__cells) if item[1] is not None]
         cell_items.sort() # in column order
         return _get_cells_biff_data_mul(self.__idx, cell_items)
         # previously:
@@ -234,7 +244,7 @@ class Row(object):
                 self.insert_cell(col, BlankCell(self.__idx, col, style_index))
         elif isinstance(label, bool): # bool is subclass of int; test bool first
             self.insert_cell(col, BooleanCell(self.__idx, col, style_index, label))
-        elif isinstance(label, (float, int, long, Decimal)):
+        elif isinstance(label, int_types+(float, Decimal)):
             self.insert_cell(col, NumberCell(self.__idx, col, style_index, label))
         elif isinstance(label, (dt.datetime, dt.date, dt.time)):
             date_number = self.__excel_date_dt(label)
@@ -244,10 +254,46 @@ class Row(object):
         elif isinstance(label, ExcelFormula.Formula):
             self.__parent_wb.add_sheet_reference(label)
             self.insert_cell(col, FormulaCell(self.__idx, col, style_index, label))
+        elif isinstance(label, (list, tuple)):
+            self.__rich_text_helper(col, label, style, style_index)
         else:
             raise Exception("Unexpected data type %r" % type(label))
 
+    def set_cell_rich_text(self, col, rich_text_list, style=Style.default_style):
+        self.__adjust_height(style)
+        self.__adjust_bound_col_idx(col)
+        if not isinstance(rich_text_list, (list, tuple)):
+            raise Exception("Unexpected data type %r" % type(rich_text_list))
+        self.__rich_text_helper(col, rich_text_list, style)
+
+    def __rich_text_helper(self, col, rich_text_list, style, style_index=None):
+        if style_index is None:
+            style_index = self.__parent_wb.add_style(style)
+        default_font = None    
+        rt = []
+        for data in rich_text_list:
+            if isinstance(data, basestring):
+                s = data
+                font = default_font
+            elif isinstance(data, (list, tuple)):
+                if not isinstance(data[0], basestring) or not isinstance(data[1], Font):
+                    raise Exception ("Unexpected data type %r, %r" % (type(data[0]), type(data[1])))
+                s = data[0]
+                font = self.__parent_wb.add_font(data[1])
+            else:
+                raise Exception ("Unexpected data type %r" % type(data))
+            if s:
+                rt.append((s, font))
+                if default_font is None:
+                    default_font = self.__parent_wb.add_font(style.font)
+        if rt:
+            self.insert_cell(col, StrCell(self.__idx, col, style_index, self.__parent_wb.add_rt(rt)))
+        else:
+            self.insert_cell(col, BlankCell(self.__idx, col, style_index))
+
     write_blanks = set_cell_mulblanks
+    write_rich_text = set_cell_rich_text
+
 
 
 

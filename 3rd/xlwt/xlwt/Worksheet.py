@@ -1,58 +1,64 @@
 # -*- coding: windows-1252 -*-
-'''
-            BOF
-            UNCALCED
-            INDEX
-            Calculation Settings Block
-            PRINTHEADERS
-            PRINTGRIDLINES
-            GRIDSET
-            GUTS
-            DEFAULTROWHEIGHT
-            WSBOOL
-            Page Settings Block
-            Worksheet Protection Block
-            DEFCOLWIDTH
-            COLINFO
-            SORT
-            DIMENSIONS
-            Row Blocks
-            WINDOW2
-            SCL
-            PANE
-            SELECTION
-            STANDARDWIDTH
-            MERGEDCELLS
-            LABELRANGES
-            PHONETIC
-            Conditional Formatting Table
-            Hyperlink Table
-            Data Validity Table
-            SHEETLAYOUT (BIFF8X only)
-            SHEETPROTECTION (BIFF8X only)
-            RANGEPROTECTION (BIFF8X only)
-            EOF
-'''
+#             BOF
+#             UNCALCED
+#             INDEX
+#             Calculation Settings Block
+#             PRINTHEADERS
+#             PRINTGRIDLINES
+#             GRIDSET
+#             GUTS
+#             DEFAULTROWHEIGHT
+#             WSBOOL
+#             Page Settings Block
+#             Worksheet Protection Block
+#             DEFCOLWIDTH
+#             COLINFO
+#             SORT
+#             DIMENSIONS
+#             Row Blocks
+#             WINDOW2
+#             SCL
+#             PANE
+#             SELECTION
+#             STANDARDWIDTH
+#             MERGEDCELLS
+#             LABELRANGES
+#             PHONETIC
+#             Conditional Formatting Table
+#             Hyperlink Table
+#             Data Validity Table
+#             SHEETLAYOUT (BIFF8X only)
+#             SHEETPROTECTION (BIFF8X only)
+#             RANGEPROTECTION (BIFF8X only)
+#             EOF
 
-import BIFFRecords
-import Bitmap
-import Formatting
-import Style
+from . import BIFFRecords
+from . import Bitmap
+from . import Style
+from .Row import Row
+from .Column import Column
+from .compat import unicode, itervalues
 import tempfile
 
-
 class Worksheet(object):
-    from Workbook import Workbook
+    """
+    This is a class
+    representing the contents of a sheet in a workbook.
 
+    .. warning::
+
+      You don't normally create instances of this class yourself.
+      They are returned from calls to :meth:`~xlwt.Workbook.Workbook.add_sheet`.
+    """
+    # a safe default value, 3 is always valid!
+    active_pane = 3
+    
     #################################################################
     ## Constructor
     #################################################################
     def __init__(self, sheetname, parent_book, cell_overwrite_ok=False):
-        import Row
-        self.Row = Row.Row
-
-        import Column
-        self.Column = Column.Column
+        self.Row = Row
+        self.Column = Column
 
         self.__name = sheetname
         self.__parent = parent_book
@@ -61,24 +67,28 @@ class Worksheet(object):
         self.__rows = {}
         self.__cols = {}
         self.__merged_ranges = []
-        self.__bmp_rec = ''
+        self.__bmp_rec = b''
 
         self.__show_formulas = 0
         self.__show_grid = 1
         self.__show_headers = 1
         self.__panes_frozen = 0
-        ### self.__show_empty_as_zero = 1 ### deprecated with extreme prejudice 2009-05-19
         self.show_zero_values = 1
         self.__auto_colour_grid = 1
         self.__cols_right_to_left = 0
         self.__show_outline = 1
         self.__remove_splits = 0
+        # Multiple sheets can be selected, but only one can be active
+        # (hold down Ctrl and click multiple tabs in the file in OOo)
         self.__selected = 0
-        # RED HERRING ALERT: "sheet_visible" is a clone of the "selected" attribute.
-        # Typically a workbook created by the Excel UI will have one sheet
-        # (the sheet that was selected when the user saved it)
-        # with both bits set to 1, and all other sheets will have both
-        # bits set to 0. The true visibility of the sheet is found in the "visibility"
+        # "sheet_visible" should really be called "sheet_active"
+        # and is 1 when this sheet is the sheet displayed when the file
+        # is open. More than likely only one sheet should ever be set as
+        # visible.
+        # The same sheet should be specified in Workbook.active_sheet
+        # (that way, both the WINDOW1 record in the book and the WINDOW2
+        # records in each sheet will be in agreement)
+        # The visibility of the sheet is found in the "visibility"
         # attribute obtained from the BOUNDSHEET record.
         self.__sheet_visible = 0
         self.__page_preview = 0
@@ -86,8 +96,10 @@ class Worksheet(object):
         self.__first_visible_row = 0
         self.__first_visible_col = 0
         self.__grid_colour = 0x40
-        self.__preview_magn = 60 # percent
-        self.__normal_magn = 100 # percent
+        self.__preview_magn = 0 # use default (60%)
+        self.__normal_magn = 0 # use default (100%)
+        self.__scl_magn = None
+        self.explicit_magn_setting = False
 
         self.visibility = 0 # from/to BOUNDSHEET record.
 
@@ -95,7 +107,27 @@ class Worksheet(object):
         self.__horz_split_pos = None
         self.__vert_split_first_visible = None
         self.__horz_split_first_visible = None
-        self.__split_active_pane = None
+
+        # This is a caller-settable flag:
+
+        self.split_position_units_are_twips = False
+
+        # Default is False for backward compatibility with pyExcelerator
+        # and previous versions of xlwt.
+        #   if panes_frozen:
+        #       vert/horz_split_pos are taken as number of rows/cols
+        #   else: # split
+        #       if split_position_units_are_twips:
+        #           vert/horz_split_pos are taken as number of twips
+        #       else:
+        #           vert/horz_split_pos are taken as
+        #           number of rows(cols) * default row(col) height (width) (i.e. 12.75 (8.43) somethings)
+        #           and converted to twips by approximate formulas
+        # Callers who are copying an existing file should use
+        #     xlwt_worksheet.split_position_units_are_twips = True
+        # because that's what's actually in the file.
+
+		# There are 20 twips to a point. There are 72 points to an inch.
 
         self.__row_gut_width = 0
         self.__col_gut_height = 0
@@ -390,6 +422,17 @@ class Worksheet(object):
 
     #################################################################
 
+    def set_scl_magn(self, value):
+        self.__scl_magn = value
+
+    def get_scl_magn(self):
+        return self.__scl_magn
+
+    scl_magn = property(get_scl_magn, set_scl_magn)
+
+
+    #################################################################
+
     def set_vert_split_pos(self, value):
         self.__vert_split_pos = abs(value)
 
@@ -427,16 +470,6 @@ class Worksheet(object):
         return self.__horz_split_first_visible
 
     horz_split_first_visible = property(get_horz_split_first_visible, set_horz_split_first_visible)
-
-    #################################################################
-
-    #def set_split_active_pane(self, value):
-    #    self.__split_active_pane = abs(value) & 0x03
-    #
-    #def get_split_active_pane(self):
-    #    return self.__split_active_pane
-    #
-    #split_active_pane = property(get_split_active_pane, set_split_active_pane)
 
     #################################################################
 
@@ -1000,7 +1033,62 @@ class Worksheet(object):
         return self.__parent
 
     def write(self, r, c, label="", style=Style.default_style):
+        """
+        This method is used to write a cell to a :class:`Worksheet`.
+
+        :param r:
+
+           The zero-relative number of the row in the worksheet to which
+           the cell should be written.
+
+        :param c:
+
+           The zero-relative number of the column in the worksheet to which
+           the cell should be written.
+
+        :param label:
+
+           The data value to be written.
+
+           An :class:`int`, :class:`long`, or
+           :class:`~decimal.Decimal` instance is converted to :class:`float`.
+
+           A :class:`unicode` instance is written as is. A :class:`bytes`
+           instance is converted to :class:`unicode` using the
+           encoding, which defaults to ``ascii``, specified when the
+           :class:`Workbook` instance was created.
+
+           A :class:`~datetime.datetime`, :class:`~datetime.date` or
+           :class:`~datetime.time` instance is converted into Excel date format
+           (a float representing the number of days since (typically)
+           ``1899-12-31T00:00:00``, under the pretence that
+           1900 was a leap year).
+
+           A :class:`bool` instance will show up as ``TRUE`` or ``FALSE`` in
+           Excel.
+
+           ``None`` causes the cell to be blank: no data, only formatting.
+
+           An :class:`xlwt.Formula` instance causes an Excel formula to be
+           written.
+
+        :param style:
+
+           A style, also known as an XF (extended format), is an
+           :class:`~xlwt.Style.XFStyle` object, which encapsulates the
+           formatting applied to the cell and its contents.
+
+           :class:`~xlwt.Style.XFStyle` objects are best set up using the
+           :func:`~xlwt.Style.easyxf` function. They may also be set up by
+           setting attributes in :class:`Alignment`, :class:`Borders`,
+           :class:`Pattern`, :class:`Font` and :class:`Protection` objects then
+           setting those objects and a format string as attributes of an
+           :class:`~xlwt.Style.XFStyle` object.
+        """
         self.row(r).write(c, label, style)
+
+    def write_rich_text(self, r, c, rich_text_list, style=Style.default_style):
+        self.row(r).set_cell_rich_text(c, rich_text_list, style)
 
     def merge(self, r1, r2, c1, c2, style=Style.default_style):
         # Stand-alone merge of previously written cells.
@@ -1032,6 +1120,12 @@ class Worksheet(object):
 
     def insert_bitmap(self, filename, row, col, x = 0, y = 0, scale_x = 1, scale_y = 1):
         bmp = Bitmap.ImDataBmpRecord(filename)
+        obj = Bitmap.ObjBmpRecord(row, col, self, bmp, x, y, scale_x, scale_y)
+
+        self.__bmp_rec += obj.get() + bmp.get()
+
+    def insert_bitmap_data(self, data, row, col, x = 0, y = 0, scale_x = 1, scale_y = 1):
+        bmp = Bitmap.ImRawDataBmpRecord(data)
         obj = Bitmap.ObjBmpRecord(row, col, self, bmp, x, y, scale_x, scale_y)
 
         self.__bmp_rec += obj.get() + bmp.get()
@@ -1113,7 +1207,7 @@ class Worksheet(object):
         return BIFFRecords.EOFRecord().get()
 
     def __colinfo_rec(self):
-        result = ''
+        result = b''
         for col in self.__cols:
             result += self.__cols[col].get_biff_record()
         return result
@@ -1139,10 +1233,24 @@ class Worksheet(object):
         options |= (self.__selected             & 0x01) << 9
         options |= (self.__sheet_visible        & 0x01) << 10
         options |= (self.__page_preview         & 0x01) << 11
-        if self.__page_preview:
-            scl_magn = self.__preview_magn
+        if self.explicit_magn_setting:
+            # Experimentation: caller can set the scl magn.
+            # None -> no SCL record written
+            # Otherwise 10 <= scl_magn <= 400 or scl_magn == 0
+            # Note: value 0 means use 100 for normal view, 60 for page break preview
+            # BREAKING NEWS: Excel interprets scl_magn = 0 very literally, your
+            # sheet appears like a tiny dot on the screen
+            scl_magn = self.__scl_magn
         else:
-            scl_magn = self.__normal_magn
+            if self.__page_preview:
+                scl_magn = self.__preview_magn
+                magn_default = 60
+            else:
+                scl_magn = self.__normal_magn
+                magn_default = 100
+            if scl_magn == magn_default or scl_magn == 0:
+                # Emulate what we think MS does
+                scl_magn = None # don't write an SCL record
         return BIFFRecords.Window2Record(
             options, self.__first_visible_row, self.__first_visible_col,
             self.__grid_colour,
@@ -1150,7 +1258,7 @@ class Worksheet(object):
 
     def __panes_rec(self):
         if self.__vert_split_pos is None and self.__horz_split_pos is None:
-            return ""
+            return b""
 
         if self.__vert_split_pos is None:
             self.__vert_split_pos = 0
@@ -1162,37 +1270,47 @@ class Worksheet(object):
                 self.__vert_split_first_visible = self.__vert_split_pos
             if self.__horz_split_first_visible is None:
                 self.__horz_split_first_visible = self.__horz_split_pos
+
+            # when frozen, the active pane has to be specifically set:
+            if self.__vert_split_pos > 0 and self.__horz_split_pos > 0:
+                active_pane = 0
+            elif self.__vert_split_pos > 0 and self.__horz_split_pos == 0:
+                active_pane = 1
+            elif self.__vert_split_pos == 0 and self.__horz_split_pos > 0:
+                active_pane = 2
+            else:
+                active_pane = 3
         else:
             if self.__vert_split_first_visible is None:
                 self.__vert_split_first_visible = 0
             if self.__horz_split_first_visible is None:
                 self.__horz_split_first_visible = 0
-            # inspired by pyXLWriter
-            self.__horz_split_pos = 20*self.__horz_split_pos + 255
-            self.__vert_split_pos = 113.879*self.__vert_split_pos + 390
+            if not self.split_position_units_are_twips:
+                # inspired by pyXLWriter
+                if self.__horz_split_pos > 0:
+                    self.__horz_split_pos = 20 * self.__horz_split_pos + 255
+                if self.__vert_split_pos > 0:
+                    self.__vert_split_pos = 113.879 * self.__vert_split_pos + 390
 
-        if self.__vert_split_pos > 0 and self.__horz_split_pos > 0:
-            self.__split_active_pane = 0
-        elif self.__vert_split_pos > 0 and self.__horz_split_pos == 0:
-            self.__split_active_pane = 1
-        elif self.__vert_split_pos == 0 and self.__horz_split_pos > 0:
-            self.__split_active_pane = 2
-        else:
-            self.__split_active_pane = 3
+            # when split, the active pain can be set as required:
+            active_pane = self.active_pane
 
-        result = BIFFRecords.PanesRecord(self.__vert_split_pos,
-                                         self.__horz_split_pos,
-                                         self.__horz_split_first_visible,
-                                         self.__vert_split_first_visible,
-                                         self.__split_active_pane).get()
+        result = BIFFRecords.PanesRecord(*map(int, (
+            self.__vert_split_pos,
+            self.__horz_split_pos,
+            self.__horz_split_first_visible,
+            self.__vert_split_first_visible,
+            active_pane
+            ))).get()
+
         return result
 
     def __row_blocks_rec(self):
         result = []
-        for row in self.__rows.itervalues():
+        for row in itervalues(self.__rows):
             result.append(row.get_row_biff_data())
             result.append(row.get_cells_biff_data())
-        return ''.join(result)
+        return b''.join(result)
 
     def __merged_rec(self):
         return BIFFRecords.MergedCellsRecord(self.__merged_ranges).get()
@@ -1201,7 +1319,7 @@ class Worksheet(object):
         return self.__bmp_rec
 
     def __calc_settings_rec(self):
-        result = ''
+        result = b''
         result += BIFFRecords.CalcModeRecord(self.__calc_mode & 0x01).get()
         result += BIFFRecords.CalcCountRecord(self.__calc_count & 0xFFFF).get()
         result += BIFFRecords.RefModeRecord(self.__RC_ref_mode & 0x01).get()
@@ -1211,7 +1329,7 @@ class Worksheet(object):
         return result
 
     def __print_settings_rec(self):
-        result = ''
+        result = b''
         result += BIFFRecords.PrintHeadersRecord(self.__print_headers).get()
         result += BIFFRecords.PrintGridLinesRecord(self.__print_grid).get()
         result += BIFFRecords.GridSetRecord(self.__grid_set).get()
@@ -1251,7 +1369,7 @@ class Worksheet(object):
         return result
 
     def __protection_rec(self):
-        result = ''
+        result = b''
         result += BIFFRecords.ProtectRecord(self.__protect).get()
         result += BIFFRecords.ScenProtectRecord(self.__scen_protect).get()
         result += BIFFRecords.WindowProtectRecord(self.__wnd_protect).get()
@@ -1275,6 +1393,11 @@ class Worksheet(object):
             self.row_tempfile.flush()
             self.row_tempfile.seek(0)
             result.append(self.row_tempfile.read())
+            self.row_tempfile.seek(0, 2) # to EOF
+            # Above seek() is necessary to avoid a spurious IOError
+            # with Errno 0 if the caller continues on writing rows
+            # and flushing row data after the save().
+            # See http://bugs.python.org/issue3207
         result.extend([
             self.__row_blocks_rec(),
             self.__merged_rec(),
@@ -1283,7 +1406,7 @@ class Worksheet(object):
             self.__panes_rec(),
             self.__eof_rec(),
             ])
-        return ''.join(result)
+        return b''.join(result)
 
     def flush_row_data(self):
         if self.row_tempfile is None:

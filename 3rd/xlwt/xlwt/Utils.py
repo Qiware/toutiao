@@ -1,39 +1,10 @@
-# pyXLWriter: A library for generating Excel Spreadsheets
-# Copyright (c) 2004 Evgeny Filatov <fufff@users.sourceforge.net>
-# Copyright (c) 2002-2004 John McNamara (Perl Spreadsheet::WriteExcel)
-#
-# This library is free software; you can redistribute it and/or modify it
-# under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation; either version 2.1 of the License, or
-# (at your option) any later version.
-#
-# This library is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser
-# General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this library; if not, write to the Free Software Foundation,
-# Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#----------------------------------------------------------------------------
-# This module was written/ported from PERL Spreadsheet::WriteExcel module
-# The author of the PERL Spreadsheet::WriteExcel module is John McNamara
-# <jmcnamara@cpan.org>
-#----------------------------------------------------------------------------
-# See the README.txt distributed with pyXLWriter for more details.
-
-# Portions are (C) Roman V. Kiseliov, 2005
-
+# see the xlwt.license module for details of licensing.
 
 # Utilities for work with reference to cells and with sheetnames
 
-
-__rev_id__ = """$Id: Utils.py 3844 2009-05-20 01:02:54Z sjmachin $"""
-
 import re
-from struct import pack
-from ExcelMagic import MAX_ROW, MAX_COL
-
+from .ExcelMagic import MAX_ROW, MAX_COL
+from .compat import xrange
 
 _re_cell_ex = re.compile(r"(\$?)([A-I]?[A-Z])(\$?)(\d+)", re.IGNORECASE)
 _re_row_range = re.compile(r"\$?(\d+):\$?(\d+)")
@@ -43,14 +14,14 @@ _re_cell_ref = re.compile(r"\$?([A-I]?[A-Z]\$?\d+)", re.IGNORECASE)
 
 
 def col_by_name(colname):
-    """
+    """'A' -> 0, 'Z' -> 25, 'AA' -> 26, etc
     """
     col = 0
-    pow = 1
+    power = 1
     for i in xrange(len(colname)-1, -1, -1):
         ch = colname[i]
-        col += (ord(ch) - ord('A') + 1) * pow
-        pow *= 26
+        col += (ord(ch) - ord('A') + 1) * power
+        power *= 26
     return col - 1
 
 
@@ -165,7 +136,7 @@ def cellrange_to_rowcol_pair(cellrange):
     if res:
         row1, col1 = cell_to_rowcol2(res.group(1))
         return row1, col1, row1, col1
-    raise Exception("Unknown cell reference %s" % (cell))
+    raise Exception("Unknown cell reference %s" % (cellrange))
 
 
 def cell_to_packed_rowcol(cell):
