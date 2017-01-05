@@ -12,8 +12,10 @@ import logging
 import urllib2
 import jieba.posseg as pseg
 
-sys.path.append("xlrd")
+sys.path.append("3rd/xlrd")
+sys.path.append("3rd/xlwt")
 import xlrd
+import xlwt
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -79,7 +81,7 @@ class Parser(object):
         film_name = "UNKNOWN"
         film_name_val = 0
         for key in parser.film_dict.keys():
-            if g_film_dict.has_key(key):
+            #if g_film_dict.has_key(key):
                 #print("num:%d name:%s" % (parser.film_dict[key], key))
                 if parser.film_dict[key] > film_name_val:
                     film_name = key
