@@ -12,15 +12,18 @@ import logging
 import urllib2
 import jieba.posseg as pseg
 
-sys.path.append("3rd/xlrd")
-sys.path.append("3rd/xlwt")
+#sys.path.append("3rd/xlrd")
+#sys.path.append("3rd/xlwt")
+#sys.path.append("3rd/xlutils")
 import xlrd
 import xlwt
+import xlutils
+from xlutils.copy import copy
+
+from film.film import Film
 
 reload(sys)
 sys.setdefaultencoding('utf8')
-
-g_film_dict = {}
 
 type = sys.getfilesystemencoding()
 
@@ -38,7 +41,7 @@ class Parser(object):
         self.title = ""
         self.gid = ""
         self.iid = ""
-        self.film_dict = {}
+        self.film_incr = {}
 
     # 提取url中有效信息
     def parse_url(self, url, iid, title):
@@ -68,39 +71,115 @@ class Parser(object):
         return comments
 
     # 分析评论数据
-    def mining(self, url, iid, title):
+    def mining(self, film, url, iid, title):
         # 提取有效信息
         self.parse_url(url, iid, title)
+
+        # 分析标题数据
+        self.parse(film, title.strip(), True)
 
         # 获取评论数据
         comments = self.fetch_comment()
 
         # 逐行分析评论
         for comment in comments:
-            self.parse(comment.strip())
+            self.parse(film, comment.strip(), False)
         film_name = "UNKNOWN"
         film_name_val = 0
-        for key in parser.film_dict.keys():
-            #if g_film_dict.has_key(key):
-                #print("num:%d name:%s" % (parser.film_dict[key], key))
-                if parser.film_dict[key] > film_name_val:
+        for key in parser.film_incr.keys():
+            #if self.iid == "6347993603079400448":
+            #    print("num:%d name:%s" % (parser.film_incr[key], key))
+            #if film.film_dict.has_key(key.encode('utf-8')):
+                if parser.film_incr[key] > film_name_val:
                     film_name = key
-                    film_name_val = parser.film_dict[key]
+                    film_name_val = parser.film_incr[key]
 
         #print("film name:%s" % (film_name))
         return film_name
 
     # 评论数据分析
-    def parse(self, comment):
+    def parse(self, film, comment, is_title):
+        # 规则匹配抽取
+        if is_title:
+            score = 20
+        else:
+            score = 10
+
+        idx = 0
+        split = re.split(r"《", comment.encode("utf-8"))
+        for text in split:
+            if 0 == idx % 2:
+                idx += 1
+                continue
+            idx += 1
+            name = re.split(r"》", text)
+            if name is None:
+                continue
+            film_name = name[0]
+            #print("%s" % film_name)
+            if self.film_incr.has_key(film_name.encode('utf-8')):
+                self.film_incr[film_name] += score
+            else:
+                self.film_incr[film_name] = score
+
+        # 词性标注处理
         result = pseg.cut(comment)
         for word, flag in result:
+            #print("word:%s flag:%s" % (word, flag))
             m = re.search("n", flag)
             if m is not None:
-                if self.film_dict.has_key(word):
-                    self.film_dict[word] += 1
-                else:
-                    self.film_dict[word] = 1
-
+                # 是否是电影名称
+                if 1 == film.is_film(word):
+                    if self.film_incr.has_key(word):
+                        self.film_incr[word] += 1
+                    else:
+                        self.film_incr[word] = 1
+                    continue
+                # 是否是演员名称
+                if 1 == film.is_star(word):
+                    film_list = film.film_list_by_star(word)
+                    for name in film_list:
+                        if self.film_incr.has_key(name):
+                            self.film_incr[name] += 1
+                        else:
+                            self.film_incr[name] = 1
+                    continue
+                # 是否是角色名称
+                if 1 == film.is_role(word):
+                    film_list = film.film_list_by_role(word)
+                    for name in film_list:
+                        if self.film_incr.has_key(name):
+                            self.film_incr[name] += 1
+                        else:
+                            self.film_incr[name] = 1
+                    continue
+            m = re.search("i", flag)
+            if m is not None:
+                # 是否是电影名称
+                if 1 == film.is_film(word):
+                    if self.film_incr.has_key(word):
+                        self.film_incr[word] += 1
+                    else:
+                        self.film_incr[word] = 1
+                    continue
+                # 是否是演员名称
+                if 1 == film.is_star(word):
+                    film_list = film.film_list_by_star(word)
+                    for name in film_list:
+                        if self.film_incr.has_key(name):
+                            self.film_incr[name] += 1
+                        else:
+                            self.film_incr[name] = 1
+                    continue
+                # 是否是角色名称
+                if 1 == film.is_role(word):
+                    film_list = film.film_list_by_role(word)
+                    for name in film_list:
+                        if self.film_incr.has_key(name):
+                            self.film_incr[name] += 1
+                        else:
+                            self.film_incr[name] = 1
+                    continue
 # 加载用户字典
 def load_userdict():
     """
@@ -119,29 +198,45 @@ def load_userdict():
     jieba.load_userdict("./dict/dict.txt");
 
 def load_film_dict(fname):
+    film_dict = {}
     # 提取电影名称
     f = open(fname, "r")
     while True:
         line = f.readline()
         if line:
             film = line.split(' ')[0].strip()
-            g_film_dict[film] = 1
+            film_dict[film] = 1
             #print("film:%s" % (film))
         else:
             break
     f.close()
 
+################################################################################
+##函数名称: main
+##功    能: 通过今日头条的评论信息提取电影名称
+##输入参数:
+##输出参数:
+##返    回:
+##实现描述:
+##     1. 加载电影相关信息
+##注意事项:
+##作    者: # Qifeng.zou # 2014.03.11 #
+################################################################################
 if __name__ == "__main__":
+    film = Film()
+
     # 获取评论文件
     fname = "影视－明星.xlsx"
     if len(sys.argv) > 1:
         fname = sys.argv[1]
 
-    # 加载自定义字典
+    # 加载自定义分词库
     load_userdict();
 
-    # 加载电影字典
-    load_film_dict("./dict/film.txt")
+    # 加载电影词典
+    load_film_dict("./dict/film.txt") # 加载电影字典
+    film.load_star("./film/star.json")      # 加载演员字典
+    film.load_film("./film/film.json")      # 加载电影字典
 
     # 从XLSX中提取有效数据
     bk = xlrd.open_workbook(fname)
@@ -159,14 +254,18 @@ if __name__ == "__main__":
     COL_TITLE       = 2 # 标题
     COL_FILM_NAME   = 3 # 片名
 
+    wb = copy(bk)
     for row in xrange(table.nrows):
         if 0 == row:
+            wb.get_sheet(2).write(0, COL_FILM_NAME, '片名')
             continue
         url = table.row(row)[COL_URL].value #execl_val_to_str(table, row, COL_URL) # 获取URL
         iid = str(int(table.row(row)[COL_ITEM_ID].value)) #execl_val_to_str(table, row, COL_ITEM_ID) # 获取ITEM ID
         title = table.row(row)[COL_TITLE].value #execl_val_to_str(table, row, COL_TITLE) # 获取标题
-    
-        parser = Parser()
-        film = parser.mining(url, iid, title) # 挖掘信息
 
-        print("%s %s %s %s" % (url, iid, title, film))
+        parser = Parser()
+        film_name = parser.mining(film, url, iid, title) # 挖掘信息
+
+        wb.get_sheet(2).write(row, COL_FILM_NAME, film_name)
+        print("[%03d] %s %s %s %s" % (row, url, iid, title, film_name))
+    #wb.save("./output.xlsx")
