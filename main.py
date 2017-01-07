@@ -107,9 +107,9 @@ class Parser(object):
     def parse(self, film, comment, is_title):
         # 规则匹配抽取
         if is_title:
-            score = 5
-        else:
             score = 3
+        else:
+            score = 2
 
         idx = 0
         split = re.split(r"《", comment.encode("utf-8"))
@@ -275,5 +275,5 @@ if __name__ == "__main__":
         film_name = parser.mining(film, url, iid, title) # 挖掘信息
 
         wb.get_sheet(2).write(row, COL_FILM_NAME, film_name)
-        #print("[%03d] %s %s %s %s" % (row, url, iid, title, film_name))
+        print("[%03d] %s %s %s %s" % (row, url, iid, title, film_name))
     #wb.save("./output.xlsx")

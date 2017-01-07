@@ -127,6 +127,10 @@ if __name__ == "__main__":
     # 加载电影字典
     film.load_film("./film.json")
 
+    for name in film.film_dict.keys():
+        if film.is_star(name):
+            print("name:%s" % name)
+
     #films = film.film_list_by_role(u"何侠");
     #for name in films:
     #    print("role:何侠 film:%s" % name)
