@@ -70,7 +70,7 @@ class Parser(object):
             for item in data['data']['comments']:
                 comments.append(item['text'])
             return comments
-        except e:
+        except:
             print("Get data failed!")
             return "{}"
 
@@ -91,13 +91,15 @@ class Parser(object):
         film_name = "UNKNOWN"
         film_name_val = 0
         for key in parser.film_set.keys():
-            if self.iid == "6359738027887030272":
-                print("num:%d name:%s" % (parser.film_set[key], key))
+            #if self.iid == "6359738027887030272":
+                #print("num:%d name:%s" % (parser.film_set[key], key))
             #if film.film_dict.has_key(key.encode('utf-8')):
             if parser.film_set[key] > film_name_val:
                 film_name = key
                 film_name_val = parser.film_set[key]
 
+        if film.is_star(film_name):
+            print("star:%s" % (film_name))
         #print("film name:%s" % (film_name))
         return film_name
 
@@ -120,7 +122,7 @@ class Parser(object):
             if name is None:
                 continue
             film_name = name[0]
-            print("%s" % film_name)
+            #print("%s" % film_name)
             if self.film_set.has_key(film_name.encode('utf-8')):
                 self.film_set[film_name] += score
             else:
@@ -198,6 +200,11 @@ def load_userdict():
     # 默认词典
     jieba.load_userdict("./dict/dict.txt");
 
+    # 电影信息
+    jieba.load_userdict("./film/film.list");
+    jieba.load_userdict("./film/star.list");
+    jieba.load_userdict("./film/role.list");
+
 def load_film_dict(fname):
     film_dict = {}
     # 提取电影名称
@@ -268,5 +275,5 @@ if __name__ == "__main__":
         film_name = parser.mining(film, url, iid, title) # 挖掘信息
 
         wb.get_sheet(2).write(row, COL_FILM_NAME, film_name)
-        print("[%03d] %s %s %s %s" % (row, url, iid, title, film_name))
+        #print("[%03d] %s %s %s %s" % (row, url, iid, title, film_name))
     #wb.save("./output.xlsx")
