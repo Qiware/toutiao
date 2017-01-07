@@ -73,7 +73,7 @@ class Film(object):
                                 continue
                             self.star2film[name] = {}
                             self.star2film[name][self.film_name(item["name_cn"])] = 1 # 更新演员->电影字典
-                            #print("name:%s film:%s" % (name, self.film_name(item["name_cn"])))
+                            #print("id:%d name:%s film:%s" % (star_id, name, self.film_name(item["name_cn"])))
             # 构造"角色 -> 电影"映射
             if len(item["starring_play"]):
                 if len(item["name_cn"]):
@@ -82,7 +82,7 @@ class Film(object):
                         if len(role):
                             self.role_dict[role] = 1 # 更新角色字典
                             if self.role2film.has_key(role):
-                                print("role:%s film:%s" % (role, self.film_name(item["name_cn"])))
+                                #print("role:%s film:%s" % (role, self.film_name(item["name_cn"])))
                                 self.role2film[role][self.film_name(item["name_cn"])] = 1 # 更新演员->电影字典
                                 continue
                             self.role2film[role] = {}
@@ -98,7 +98,7 @@ class Film(object):
     def film_list_by_role(self, role):
         if self.role2film.has_key(role):
             return self.role2film[role].keys()
-        print("Didn't found!")
+        #print("Didn't found!")
         return {}
 
     # 判断是否是角色
@@ -127,10 +127,10 @@ if __name__ == "__main__":
     # 加载电影字典
     film.load_film("./film.json")
 
-    films = film.film_list_by_role(u"何侠");
-    for name in films:
-        print("role:何侠 film:%s" % name)
+    #films = film.film_list_by_role(u"何侠");
+    #for name in films:
+    #    print("role:何侠 film:%s" % name)
 
-    films = film.film_list_by_star(u"黎明");
-    for name in films:
-        print("name:黎明 film:%s" % name)
+    #films = film.film_list_by_star(u"黎明");
+    #for name in films:
+    #    print("name:黎明 film:%s" % name)
