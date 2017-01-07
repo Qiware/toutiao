@@ -60,15 +60,19 @@ class Parser(object):
         # 评论存储文件名
         url = "http://www.toutiao.com/api/comment/list/?group_id="+self.gid+"&item_id="+self.iid+"&offset=0&count=100"
 
-        fd = urllib2.urlopen(url)
-        comment = fd.read()
+        try:
+            fd = urllib2.urlopen(url)
+            comment = fd.read()
 
-        #print("%s" % comment)
-        comments = []
-        data = json.loads(comment)
-        for item in data['data']['comments']:
-            comments.append(item['text'])
-        return comments
+            #print("%s" % comment)
+            comments = []
+            data = json.loads(comment)
+            for item in data['data']['comments']:
+                comments.append(item['text'])
+            return comments
+        except e:
+            print("Get data failed!")
+            return "{}"
 
     # 分析评论数据
     def mining(self, film, url, iid, title):
@@ -101,9 +105,9 @@ class Parser(object):
     def parse(self, film, comment, is_title):
         # 规则匹配抽取
         if is_title:
-            score = 20
+            score = 5
         else:
-            score = 10
+            score = 3
 
         idx = 0
         split = re.split(r"《", comment.encode("utf-8"))
@@ -265,6 +269,4 @@ if __name__ == "__main__":
 
         wb.get_sheet(2).write(row, COL_FILM_NAME, film_name)
         print("[%03d] %s %s %s %s" % (row, url, iid, title, film_name))
-        if row > 47:
-            break
     #wb.save("./output.xlsx")
