@@ -107,9 +107,9 @@ class Parser(object):
     def parse(self, film, comment, is_title):
         # 规则匹配抽取
         if is_title:
-            score = 3
+            score = 8
         else:
-            score = 2
+            score = 5
 
         idx = 0
         split = re.split(r"《", comment.encode("utf-8"))
@@ -137,9 +137,9 @@ class Parser(object):
                 # 是否是电影名称
                 if 1 == film.is_film(word):
                     if self.film_set.has_key(word):
-                        self.film_set[word] += 1
+                        self.film_set[word] += 2
                     else:
-                        self.film_set[word] = 1
+                        self.film_set[word] = 2
                 # 是否是演员名称
                 if 1 == film.is_star(word):
                     film_list = film.film_list_by_star(word)
@@ -161,9 +161,9 @@ class Parser(object):
                 # 是否是电影名称
                 if 1 == film.is_film(word):
                     if self.film_set.has_key(word):
-                        self.film_set[word] += 1
+                        self.film_set[word] += 2
                     else:
-                        self.film_set[word] = 1
+                        self.film_set[word] = 2
                     continue
                 # 是否是演员名称
                 if 1 == film.is_star(word):
@@ -265,7 +265,7 @@ if __name__ == "__main__":
     wb = copy(bk)
     for row in xrange(table.nrows):
         if 0 == row:
-            wb.get_sheet(2).write(0, COL_FILM_NAME, '片名')
+            wb.get_sheet(2).write(0, COL_FILM_NAME, unicode('片名'))
             continue
         url = table.row(row)[COL_URL].value #execl_val_to_str(table, row, COL_URL) # 获取URL
         iid = str(int(table.row(row)[COL_ITEM_ID].value)) #execl_val_to_str(table, row, COL_ITEM_ID) # 获取ITEM ID
@@ -274,6 +274,6 @@ if __name__ == "__main__":
         parser = Parser()
         film_name = parser.mining(film, url, iid, title) # 挖掘信息
 
-        wb.get_sheet(2).write(row, COL_FILM_NAME, film_name)
+        wb.get_sheet(2).write(row, COL_FILM_NAME, unicode(film_name))
         print("[%03d] %s %s %s %s" % (row, url, iid, title, film_name))
-    #wb.save("./output.xlsx")
+    wb.save("./output.xlsx")
