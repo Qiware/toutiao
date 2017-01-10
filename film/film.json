@@ -45350,11 +45350,6 @@
 		"starring_play" : ""
 	},
 	{
-		"name_cn" : "我们",
-		"starring" : ",31741,30950,",
-		"starring_play" : ""
-	},
-	{
 		"name_cn" : "左边的风声",
 		"starring" : ",31745,31744,31743,",
 		"starring_play" : ""
@@ -79800,11 +79795,6 @@
 		"starring_play" : ""
 	},
 	{
-		"name_cn" : "我们",
-		"starring" : ",2264,787,",
-		"starring_play" : ""
-	},
-	{
 		"name_cn" : "还钱",
 		"starring" : ",3575808,3575809,3371568,",
 		"starring_play" : ""
@@ -96569,5 +96559,10 @@
 		"name_cn" : "电锯惊魂",
 		"starring" : "",
 		"starring_play" : "电锯"
+	},
+	{
+		"name_cn" : "从天而降",
+		"starring" : "",
+		"starring_play" : ""
 	}
 ]
