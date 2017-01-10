@@ -11177,7 +11177,7 @@
 	{
 		"name_cn" : "过界",
 		"starring" : ",2748,3757,2879,233,",
-		"starring_play" : ""
+		"starring_play" : "顾涛,李小安,暴走族,张恒,修行人,张小豆"
 	},
 	{
 		"name_cn" : "鱼不在水里",
@@ -35002,7 +35002,7 @@
 	{
 		"name_cn" : "闪耀的女人之北川景子",
 		"starring" : ",670,",
-		"starring_play" : ",自己,"
+		"starring_play" : ""
 	},
 	{
 		"name_cn" : "倾城绝恋未删减",
@@ -43517,7 +43517,7 @@
 	{
 		"name_cn" : "过界",
 		"starring" : ",128,242,3052784,",
-		"starring_play" : ",我,"
+		"starring_play" : ""
 	},
 	{
 		"name_cn" : "西雅图夜未眠",
@@ -96563,6 +96563,16 @@
 	{
 		"name_cn" : "从天而降",
 		"starring" : "",
+		"starring_play" : ""
+	},
+	{
+		"name_cn" : "精武陈真",
+		"starring" : "1170,14093,20849,928,4751",
+		"starring_play" : "霍元甲,东洋,陈真,霍东觉,程知恩,精武门"
+	},
+	{
+		"name_cn" : "新霸王花",
+		"starring" : "1302,2570,3591653",
 		"starring_play" : ""
 	}
 ]
