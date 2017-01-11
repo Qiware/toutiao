@@ -57,10 +57,13 @@ class Film(object):
         f = file(path)
         data = json.load(f)
         for item in data:
+            # 构造"影名词库"
+            if len(item["name_cn"]):
+                self.film_dict[self.film_name(item["name_cn"])] = 1 # 更新电影字典
+
             # 构造"明星 -> 电影"映射
             if len(item["starring"]):
                 if len(item["name_cn"]):
-                    self.film_dict[self.film_name(item["name_cn"])] = 1 # 更新电影字典
                     stars = item["starring"].split(",")
                     for star in stars:
                         if 0 == len(star):
