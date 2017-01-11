@@ -1137,7 +1137,7 @@
 	{
 		"name_cn" : "白领公寓",
 		"starring" : ",886,3054992,2222,3661,20251,",
-		"starring_play" : "undefinedundefined"
+		"starring_play" : ""
 	},
 	{
 		"name_cn" : "美丽无声",
@@ -13382,7 +13382,7 @@
 	{
 		"name_cn" : "囧探佳人",
 		"starring" : ",2879,2650,1834,938,",
-		"starring_play" : "undefinedundefined,"
+		"starring_play" : ","
 	},
 	{
 		"name_cn" : "烟雨斜阳",
@@ -15642,7 +15642,7 @@
 	{
 		"name_cn" : "喜临门",
 		"starring" : ",1725,2403,2476,10267,13334,",
-		"starring_play" : "undefinedundefined"
+		"starring_play" : ""
 	},
 	{
 		"name_cn" : "蜀山",
@@ -15827,7 +15827,7 @@
 	{
 		"name_cn" : "罗曼史",
 		"starring" : ",2540,22853,2613,3012457,",
-		"starring_play" : "undefinedundefined,"
+		"starring_play" : ","
 	},
 	{
 		"name_cn" : "两个永恒之烟锁重楼",
@@ -16557,7 +16557,7 @@
 	{
 		"name_cn" : "父子",
 		"starring" : ",755,250,2001743,3051943,3007684,",
-		"starring_play" : "undefinedundefined"
+		"starring_play" : ""
 	},
 	{
 		"name_cn" : "新忠烈图",
@@ -19272,7 +19272,7 @@
 	{
 		"name_cn" : "尼玛的夏天",
 		"starring" : ",2256,4036,4035,4037,",
-		"starring_play" : "undefinedundefined,"
+		"starring_play" : ","
 	},
 	{
 		"name_cn" : "家比天大",
@@ -19477,7 +19477,7 @@
 	{
 		"name_cn" : "灵异电台",
 		"starring" : ",2002729,2002730,2002731,2002732,",
-		"starring_play" : "undefinedundefined,"
+		"starring_play" : ","
 	},
 	{
 		"name_cn" : "幸福在哪里",
@@ -45208,21 +45208,6 @@
 		"name_cn" : "追踪长尾豹马修",
 		"starring" : ",480,2014124,6560,19708,",
 		"starring_play" : ""
-	},
-	{
-		"name_cn" : "test123333",
-		"starring" : ",2009382,",
-		"starring_play" : "d"
-	},
-	{
-		"name_cn" : "ssfffffffffffff",
-		"starring" : ",2009383,",
-		"starring_play" : "s"
-	},
-	{
-		"name_cn" : "cessssssssssss",
-		"starring" : ",2009383,",
-		"starring_play" : "cessssssssssss"
 	},
 	{
 		"name_cn" : "我想和你好好的",
@@ -93978,7 +93963,7 @@
 	{
 		"name_cn" : "大冒险家",
 		"starring" : ",3,2043,1439,",
-		"starring_play" : ""
+		"starring_play" : "挑战者"
 	},
 	{
 		"name_cn" : "明末风云",
