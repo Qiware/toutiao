@@ -86403,7 +86403,7 @@
 	{
 		"name_cn" : "指环王1：护戒使者",
 		"starring" : ",594,3058816,4804,",
-		"starring_play" : ""
+		"starring_play" : "魔戒"
 	},
 	{
 		"name_cn" : "意大利人在俄罗斯的奇遇",
@@ -86623,7 +86623,7 @@
 	{
 		"name_cn" : "指环王2：双塔奇兵",
 		"starring" : ",594,4804,3058816,",
-		"starring_play" : ""
+		"starring_play" : "魔戒"
 	},
 	{
 		"name_cn" : "科学睡眠",
@@ -86818,7 +86818,7 @@
 	{
 		"name_cn" : "指环王3：王者归来",
 		"starring" : ",3006425,594,4804,",
-		"starring_play" : ""
+		"starring_play" : "魔戒"
 	},
 	{
 		"name_cn" : "做我太太100天",
@@ -96614,5 +96614,15 @@
 		"name_cn" : "金榜题名",
 		"starring" : "813,2215,157,1333",
 		"starring_play" : ""
+	},
+	{
+		"name_cn" : "羞羞鬼",
+		"starring" : "2303,1205",
+		"starring_play" : ""
+	},
+	{
+		"name_cn" : "指环王",
+		"starring" : ",594,",
+		"starring_play" : "魔戒"
 	}
 ]
