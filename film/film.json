@@ -7475,11 +7475,6 @@
 		"starring_play" : ""
 	},
 	{
-		"name_cn" : "爱",
-		"starring" : ",2372,3177,3061370,22599,23175,",
-		"starring_play" : ""
-	},
-	{
 		"name_cn" : "孽海花",
 		"starring" : ",3343,2485,19117,402,",
 		"starring_play" : ""
@@ -96634,5 +96629,15 @@
 		"name_cn" : "圣殿骑士",
 		"starring" : "",
 		"starring_play" : "弓箭手,骑士"
+	},
+	{
+		"name_cn" : "变异杀人蜂",
+		"starring" : "",
+		"starring_play" : "杀人蜂"
+	},
+	{
+		"name_cn" : "有一种爱叫放手",
+		"starring" : "",
+		"starring_play" : ""
 	}
 ]
