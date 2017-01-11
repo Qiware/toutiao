@@ -5027,7 +5027,7 @@
 	{
 		"name_cn" : "我的兄弟叫顺溜",
 		"starring" : ",775,396,3051591,",
-		"starring_play" : ""
+		"starring_play" : "顺溜"
 	},
 	{
 		"name_cn" : "封神榜之武王伐纣",
@@ -8277,7 +8277,7 @@
 	{
 		"name_cn" : "大腕",
 		"starring" : ",220,2043,",
-		"starring_play" : ""
+		"starring_play" : "疯人院,"
 	},
 	{
 		"name_cn" : "天下无贼",
@@ -32622,7 +32622,7 @@
 	{
 		"name_cn" : "江湖告急",
 		"starring" : ",691,733,1194,501,736,19316,2000987,2716,3154,1205,",
-		"starring_play" : ""
+		"starring_play" : "乌鸦"
 	},
 	{
 		"name_cn" : "辣手回春",
@@ -51072,7 +51072,7 @@
 	{
 		"name_cn" : "壮士出川",
 		"starring" : ",13582,3064288,30384,23348,34714,31126,1772,",
-		"starring_play" : ""
+		"starring_play" : "鬼子"
 	},
 	{
 		"name_cn" : "圆梦",
@@ -96624,5 +96624,15 @@
 		"name_cn" : "指环王",
 		"starring" : ",594,",
 		"starring_play" : "魔戒"
+	},
+	{
+		"name_cn" : "芳芳",
+		"starring" : "",
+		"starring_play" : "苏菲玛索"
+	},
+	{
+		"name_cn" : "圣殿骑士",
+		"starring" : "",
+		"starring_play" : ""
 	}
 ]
