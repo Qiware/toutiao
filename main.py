@@ -134,10 +134,15 @@ class Parser(object):
         result = pseg.cut(comment)
         for word, flag in result:
             #print("word:%s flag:%s" % (word, flag))
+            if "n" != flag:
+                continue
+
             m = re.search("n", flag)
             if m is not None:
+                #print("word:%s flag:%s" % (word, flag))
                 # 是否是电影名称
                 if 1 == film.is_film(word):
+                    print("This is film name. film:%s" % (word))
                     if self.film_set.has_key(word):
                         self.film_set[word] += 3
                     else:
@@ -146,7 +151,7 @@ class Parser(object):
                 if 1 == film.is_star(word):
                     film_list = film.film_list_by_star(word)
                     for name in film_list:
-                        print("1 word:%s name:%s" % (word, name))
+                        print("Get film by star. star:%s film:%s" % (word, name))
                         if self.film_set.has_key(name):
                             self.film_set[name] += 1
                         else:
@@ -155,40 +160,42 @@ class Parser(object):
                 if 1 == film.is_role(word):
                     film_list = film.film_list_by_role(word)
                     for name in film_list:
-                        print("2 word:%s name:%s" % (word, name))
+                        print("Get film by role. role:%s film:%s" % (word, name))
                         if self.film_set.has_key(name):
                             self.film_set[name] += 2
                         else:
                             self.film_set[name] = 2
-            else:
-                m = re.search("i", flag)
-                if m is not None:
-                    # 是否是电影名称
-                    if 1 == film.is_film(word):
-                        if self.film_set.has_key(word):
-                            self.film_set[word] += 3
-                        else:
-                            self.film_set[word] = 3
-                        continue
-                    # 是否是演员名称
-                    if 1 == film.is_star(word):
-                        film_list = film.film_list_by_star(word)
-                        for name in film_list:
-                            print("word:%s name:%s" % (word, name))
-                            if self.film_set.has_key(name):
-                                self.film_set[name] += 1
-                            else:
-                                self.film_set[name] = 1
-                        continue
-                    # 是否是角色名称
-                    if 1 == film.is_role(word):
-                        film_list = film.film_list_by_role(word)
-                        for name in film_list:
-                            if self.film_set.has_key(name):
-                                self.film_set[name] += 2
-                            else:
-                                self.film_set[name] = 2
-                        continue
+            #else:
+            #    m = re.search("i", flag)
+            #    if m is not None:
+            #        # 是否是电影名称
+            #        if 1 == film.is_film(word):
+            #            print("This is film name. film:%s" % (word))
+            #            if self.film_set.has_key(word):
+            #                self.film_set[word] += 3
+            #            else:
+            #                self.film_set[word] = 3
+            #            continue
+            #        # 是否是演员名称
+            #        if 1 == film.is_star(word):
+            #            film_list = film.film_list_by_star(word)
+            #            for name in film_list:
+            #                print("Get film by star. star:%s film:%s" % (word, name))
+            #                if self.film_set.has_key(name):
+            #                    self.film_set[name] += 1
+            #                else:
+            #                    self.film_set[name] = 1
+            #            continue
+            #        # 是否是角色名称
+            #        if 1 == film.is_role(word):
+            #            film_list = film.film_list_by_role(word)
+            #            for name in film_list:
+            #                print("Get film by role. role:%s film:%s" % (word, name))
+            #                if self.film_set.has_key(name):
+            #                    self.film_set[name] += 2
+            #                else:
+            #                    self.film_set[name] = 2
+            #            continue
 # 加载用户字典
 def load_userdict():
     """
@@ -240,7 +247,7 @@ if __name__ == "__main__":
     film = Film()
 
     # 获取评论文件
-    fname = "影视－明星.xlsx"
+    fname = "./doc/影视－明星.xlsx"
     if len(sys.argv) > 1:
         fname = sys.argv[1]
 
@@ -273,7 +280,9 @@ if __name__ == "__main__":
         if 0 == row:
             wb.get_sheet(2).write(0, COL_FILM_NAME, unicode('片名'))
             continue
-        #if row > 3:
+        #if row < 133:
+        #    continue
+        #if row > 134:
         #    break
         url = table.row(row)[COL_URL].value #execl_val_to_str(table, row, COL_URL) # 获取URL
         iid = str(int(table.row(row)[COL_ITEM_ID].value)) #execl_val_to_str(table, row, COL_ITEM_ID) # 获取ITEM ID
@@ -284,4 +293,4 @@ if __name__ == "__main__":
 
         wb.get_sheet(2).write(row, COL_FILM_NAME, unicode(film_name))
         print("[%03d] %s %s %s %s" % (row, url, iid, title, film_name))
-    wb.save("./output.xlsx")
+    wb.save("./doc/output.xlsx")
