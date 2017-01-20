@@ -2370,11 +2370,6 @@
 		"starring_play" : ""
 	},
 	{
-		"name_cn" : "左右",
-		"starring" : ",107,229,2170,2800,535,3052784,",
-		"starring_play" : ""
-	},
-	{
 		"name_cn" : "仙境之桥",
 		"starring" : ",3051610,3057413,2011212,",
 		"starring_play" : ""
@@ -39267,7 +39262,7 @@
 	{
 		"name_cn" : "超人：钢铁之躯",
 		"starring" : ",552,3053146,17488,3058423,3051967,2015240,",
-		"starring_play" : ""
+		"starring_play" : "超人"
 	},
 	{
 		"name_cn" : "猎杀本拉登",
@@ -41232,7 +41227,7 @@
 	{
 		"name_cn" : "变身超人",
 		"starring" : ",505,29515,29516,29513,29514,29248,25233,",
-		"starring_play" : ""
+		"starring_play" : "超人"
 	},
 	{
 		"name_cn" : "香水有毒",
@@ -44407,7 +44402,7 @@
 	{
 		"name_cn" : "超人：钢铁之躯",
 		"starring" : ",552,3053146,17488,3058423,",
-		"starring_play" : ""
+		"starring_play" : "超人"
 	},
 	{
 		"name_cn" : "第三届中国国际微电影节展播",
@@ -53735,11 +53730,6 @@
 		"starring_play" : ""
 	},
 	{
-		"name_cn" : "僵尸",
-		"starring" : ",10041,1060,2393,2338,",
-		"starring_play" : ""
-	},
-	{
 		"name_cn" : "第一次不是你",
 		"starring" : ",2760,25236,2016152,2016151,",
 		"starring_play" : ""
@@ -57832,7 +57822,7 @@
 	{
 		"name_cn" : "我的情敌是超人",
 		"starring" : ",2115,3023386,3061078,1399,2001374,",
-		"starring_play" : ""
+		"starring_play" : "超人"
 	},
 	{
 		"name_cn" : "全时空接触",
@@ -58270,11 +58260,6 @@
 		"starring_play" : ""
 	},
 	{
-		"name_cn" : "怪物",
-		"starring" : ",2017058,22324,22200,2017060,",
-		"starring_play" : ""
-	},
-	{
 		"name_cn" : "不正停车",
 		"starring" : ",3019766,",
 		"starring_play" : ""
@@ -58467,11 +58452,6 @@
 	{
 		"name_cn" : "现在这样就好",
 		"starring" : ",3055221,7557,2017119,2017120,2017121,",
-		"starring_play" : ""
-	},
-	{
-		"name_cn" : "医生",
-		"starring" : ",20202,2017122,",
 		"starring_play" : ""
 	},
 	{
@@ -64747,7 +64727,7 @@
 	{
 		"name_cn" : "蝙蝠侠大战超人：正义黎明",
 		"starring" : ",552,3053146,3052626,3061431,3051967,7549,3022644,4670,4739,3052483,",
-		"starring_play" : ""
+		"starring_play" : "蝙蝠侠,超人"
 	},
 	{
 		"name_cn" : "我是路人甲",
@@ -66247,7 +66227,7 @@
 	{
 		"name_cn" : "夏洛特烦恼",
 		"starring" : ",28148,3062925,3058666,3058669,",
-		"starring_play" : ""
+		"starring_play" : "马东什么,什么冬梅,马什么梅,马冬梅,夏洛"
 	},
 	{
 		"name_cn" : "火星救援",
@@ -77147,7 +77127,7 @@
 	{
 		"name_cn" : "蝙蝠侠大战超人：正义黎明",
 		"starring" : ",552,3053146,3052626,3061431,",
-		"starring_play" : ""
+		"starring_play" : "蝙蝠侠,超人"
 	},
 	{
 		"name_cn" : "寻找罗麦",
@@ -77392,7 +77372,7 @@
 	{
 		"name_cn" : "超人：钢铁之躯",
 		"starring" : ",552,3053146,17488,",
-		"starring_play" : ""
+		"starring_play" : "超人"
 	},
 	{
 		"name_cn" : "撸鬼屋",
@@ -89418,7 +89398,7 @@
 	{
 		"name_cn" : "超人归来",
 		"starring" : ",3051949,3058973,23300,404,",
-		"starring_play" : ""
+		"starring_play" : "超人"
 	},
 	{
 		"name_cn" : "魔谷奇案",
@@ -96323,7 +96303,7 @@
 	{
 		"name_cn" : "超人钢铁之躯",
 		"starring" : "",
-		"starring_play" : ""
+		"starring_play" : "超人"
 	},
 	{
 		"name_cn" : "武林风",
@@ -96494,5 +96474,15 @@
 		"name_cn" : "落地请开手机",
 		"starring" : ",141,1577,3401,14182,864,",
 		"starring_play" : "刘华强,"
+	},
+	{
+		"name_cn" : "奥特曼",
+		"starring" : "",
+		"starring_play" : ""
+	},
+	{
+		"name_cn" : "沙子怪物",
+		"starring" : "",
+		"starring_play" : "沙滩怪物"
 	}
 ]

@@ -123,7 +123,7 @@ class Parser(object):
             name = re.split(r"》", text)
             if name is None:
                 continue
-            film_name = name[0]
+            film_name = unicode(name[0].strip())
             #print("%s" % film_name)
             if self.film_set.has_key(film_name.encode('utf-8')):
                 self.film_set[film_name] += score
