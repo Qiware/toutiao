@@ -22111,11 +22111,6 @@
 		"starring_play" : ""
 	},
 	{
-		"name_cn" : "游客",
-		"starring" : ",25039,25040,24902,",
-		"starring_play" : ""
-	},
-	{
 		"name_cn" : "麻烦两个半",
 		"starring" : ",7495,25042,25043,",
 		"starring_play" : ""
@@ -25488,7 +25483,7 @@
 	{
 		"name_cn" : "功夫",
 		"starring" : ",285,3052471,2776,540,13436,",
-		"starring_play" : "星爷"
+		"starring_play" : "星爷,火云邪神,包租婆,斧头帮"
 	},
 	{
 		"name_cn" : "燃情岁月",
@@ -41341,11 +41336,6 @@
 		"starring_play" : ""
 	},
 	{
-		"name_cn" : "我爸",
-		"starring" : ",29609,29608,",
-		"starring_play" : ""
-	},
-	{
 		"name_cn" : "夜行日记",
 		"starring" : ",29610,29611,29612,",
 		"starring_play" : ""
@@ -48163,11 +48153,6 @@
 	{
 		"name_cn" : "志气",
 		"starring" : ",3057666,33480,2002722,2003353,",
-		"starring_play" : ""
-	},
-	{
-		"name_cn" : "游戏",
-		"starring" : ",6951,22219,7891,18070,1789,24391,",
 		"starring_play" : ""
 	},
 	{
@@ -56121,11 +56106,6 @@
 		"starring_play" : ""
 	},
 	{
-		"name_cn" : "打架",
-		"starring" : ",1403,3039294,2016403,",
-		"starring_play" : ""
-	},
-	{
 		"name_cn" : "喜剧电影",
 		"starring" : ",2220,5326,2688,",
 		"starring_play" : ""
@@ -58428,11 +58408,6 @@
 	{
 		"name_cn" : "小达瑟",
 		"starring" : ",2017132,2017133,2017134,",
-		"starring_play" : ""
-	},
-	{
-		"name_cn" : "姐姐",
-		"starring" : ",1281,",
 		"starring_play" : ""
 	},
 	{
@@ -96442,5 +96417,15 @@
 		"name_cn" : "东成西就",
 		"starring" : ",691,166,754,4,741,168,242,407,4815,822",
 		"starring_play" : "黄药师,三公主,欧阳锋,洪七,段王爷,周伯通,王重阳,素秋,东邪西毒"
+	},
+	{
+		"name_cn" : "龙在天涯",
+		"starring" : "",
+		"starring_play" : ""
+	},
+	{
+		"name_cn" : "绿巨人",
+		"starring" : "",
+		"starring_play" : ""
 	}
 ]
