@@ -110,8 +110,25 @@ class Parser(object):
             print("%s" % film_name)
             if self.film_set.has_key(film_name.encode('utf-8')):
                 self.film_set[film_name] += score
+            elif self.film_set.has_key(film_name):
+                self.film_set[film_name] += score
             else:
-                self.film_set[film_name] = score
+                num = 0
+                film_list = film.film_list_by_alias(film_name)
+                for name in film_list:
+                    num += 1
+                    print("Get film by alias. alias:%s film:%s" % (film_name, name))
+                    if self.film_set.has_key(name):
+                        self.film_set[name] += score
+                    else:
+                        self.film_set[name] = score
+                if 0 == num:
+                    print("Not found film:%s" % film_name)
+                    self.film_set[film_name] = score
+                    if self.film_set.has_key(film_name):
+                        self.film_set[film_name] += score
+                    else:
+                        self.film_set[film_name] = score
 
         # 词性标注处理
         result = pseg.cut(comment)
@@ -130,6 +147,14 @@ class Parser(object):
                         self.film_set[word] += 3
                     else:
                         self.film_set[word] = 3
+                # 是否是别名名称
+                film_list = film.film_list_by_alias(word)
+                for name in film_list:
+                    print("Get film by alias. alias:%s film:%s" % (word, name))
+                    if self.film_set.has_key(name):
+                        self.film_set[name] += 2
+                    else:
+                        self.film_set[name] = 2
                 # 是否是演员名称
                 if 1 == film.is_star(word):
                     film_list = film.film_list_by_star(word)
