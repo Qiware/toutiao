@@ -18,15 +18,17 @@ type = sys.getfilesystemencoding()
 
 class Film(object):
     def __init__(self):
-        self.star_dict = {} # 明星字典(明星名)
-        self.role_dict = {} # 角色字典(角色名)
-        self.film_dict = {} # 电影字典(电影名)
+        self.star_dict = {} # 明星字典(明星名) - unicode编码
+        self.role_dict = {} # 角色字典(角色名) - unicode编码
+        self.film_dict = {} # 电影字典(电影名) - unicode编码
+        self.alias_dict = {} # 别名字典(电影别名,简称) - unicode编码
         self.id2star = {}   # ID->明星
         self.star2film = {} # 明星->电影
         self.role2film = {} # 角色->电影
 
     # 抽取电影名称
     def film_name(self, text):
+        text = unicode(text)
         idx = 0
         split = re.split(r"《", text.encode("utf-8"))
         for item in split:
@@ -47,8 +49,8 @@ class Film(object):
         for item in data:
             if 0 != item["id"]:
                 if len(item["name"]):
-                    self.star_dict[item["name"]] = 1 # 更新明星字典
-                    self.id2star[item["id"]] = item["name"] # 更新ID->明星字典
+                    self.star_dict[unicode(item["name"])] = 1 # 更新明星字典
+                    self.id2star[item["id"]] = unicode(item["name"]) # 更新ID->明星字典
                     #print("id:%d %s" % (item["id"], item["name"]))
         return self.id2star
 
@@ -58,8 +60,15 @@ class Film(object):
         data = json.load(f)
         for item in data:
             # 构造"影名词库"
+            name_cn = self.film_name(item["name_cn"])
             if len(item["name_cn"]):
-                self.film_dict[self.film_name(item["name_cn"])] = 1 # 更新电影字典
+                self.film_dict[name_cn] = 1 # 更新电影字典
+                if item.has_key("alias"):
+                    if len(item["alias"]):
+                        alias = unicode(item["alias"])
+                        if not self.alias_dict.has_key(alias):
+                            self.alias_dict[alias] = {}
+                        self.alias_dict[alias][name_cn] = 1 # 更新别名字典
 
             # 构造"明星 -> 电影"映射
             if len(item["starring"]):
@@ -72,33 +81,43 @@ class Film(object):
                         if self.id2star.has_key(star_id):
                             name = self.id2star[star_id]
                             if self.star2film.has_key(name):
-                                self.star2film[name][self.film_name(item["name_cn"])] = 1 # 更新演员->电影字典
+                                self.star2film[name][name_cn] = 1 # 更新演员->电影字典
                                 continue
                             self.star2film[name] = {}
-                            self.star2film[name][self.film_name(item["name_cn"])] = 1 # 更新演员->电影字典
+                            self.star2film[name][name_cn] = 1 # 更新演员->电影字典
                             #print("id:%d name:%s film:%s" % (star_id, name, self.film_name(item["name_cn"])))
             # 构造"角色 -> 电影"映射
             if len(item["starring_play"]):
                 if len(item["name_cn"]):
                     roles = item["starring_play"].split(",")
                     for role in roles:
+                        role = unicode(role)
                         if len(role):
                             self.role_dict[role] = 1 # 更新角色字典
                             if self.role2film.has_key(role):
                                 #print("role:%s film:%s" % (role, self.film_name(item["name_cn"])))
-                                self.role2film[role][self.film_name(item["name_cn"])] = 1 # 更新演员->电影字典
+                                self.role2film[role][name_cn] = 1 # 更新演员->电影字典
                                 continue
                             self.role2film[role] = {}
-                            self.role2film[role][self.film_name(item["name_cn"])] = 1 # 更新演员->电影字典
+                            self.role2film[role][name_cn] = 1 # 更新演员->电影字典
+    # 通过别名查找电影列表
+    def film_list_by_alias(self, alias):
+        alias = unicode(alias)
+        if self.alias_dict.has_key(alias):
+            return self.alias_dict[alias].keys()
+        #print("Didn't found!")
+        return {}
 
     # 通过明星查找电影列表
     def film_list_by_star(self, star):
+        star = unicode(star)
         if self.star2film.has_key(star):
             return self.star2film[star].keys()
         return {}
 
     # 通过角色查找电影列表
     def film_list_by_role(self, role):
+        role = unicode(role)
         if self.role2film.has_key(role):
             return self.role2film[role].keys()
         #print("Didn't found!")
@@ -106,18 +125,21 @@ class Film(object):
 
     # 判断是否是角色
     def is_role(self, name):
+        name = unicode(name)
         if self.role_dict.has_key(name):
             return 1
         return 0
 
     # 判断是否是演员
     def is_star(self, name):
+        name = unicode(name)
         if self.star_dict.has_key(name):
             return 1
         return 0
 
     # 判断是否是电影
     def is_film(self, name):
+        name = unicode(name)
         if self.film_dict.has_key(name):
             return 1
         return 0
