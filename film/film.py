@@ -65,10 +65,14 @@ class Film(object):
                 self.film_dict[name_cn] = 1 # 更新电影字典
                 if item.has_key("alias"):
                     if len(item["alias"]):
-                        alias = unicode(item["alias"])
-                        if not self.alias_dict.has_key(alias):
-                            self.alias_dict[alias] = {}
-                        self.alias_dict[alias][name_cn] = 1 # 更新别名字典
+                        alias_list = item["alias"].split(",")
+                        for alias in alias_list:
+                            if 0 == len(alias):
+                                continue
+                            alias = unicode(alias)
+                            if not self.alias_dict.has_key(alias):
+                                self.alias_dict[alias] = {}
+                            self.alias_dict[alias][name_cn] = 1 # 更新别名字典
 
             # 构造"明星 -> 电影"映射
             if len(item["starring"]):
@@ -80,6 +84,22 @@ class Film(object):
                         star_id = int(star)
                         if self.id2star.has_key(star_id):
                             name = self.id2star[star_id]
+                            if self.star2film.has_key(name):
+                                self.star2film[name][name_cn] = 1 # 更新演员->电影字典
+                                continue
+                            self.star2film[name] = {}
+                            self.star2film[name][name_cn] = 1 # 更新演员->电影字典
+                            #print("id:%d name:%s film:%s" % (star_id, name, self.film_name(item["name_cn"])))
+
+            # 构造"明星 -> 电影"映射
+            if item.has_key("actor"):
+                if len(item["actor"]):
+                    if len(item["name_cn"]):
+                        stars = item["actor"].split(",")
+                        for stars in stars:
+                            if 0 == len(star):
+                                continue
+                            name = unicode(star)
                             if self.star2film.has_key(name):
                                 self.star2film[name][name_cn] = 1 # 更新演员->电影字典
                                 continue
