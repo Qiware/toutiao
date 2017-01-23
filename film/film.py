@@ -49,9 +49,10 @@ class Film(object):
         for item in data:
             if 0 != item["id"]:
                 if len(item["name"]):
-                    self.star_dict[unicode(item["name"])] = 1 # 更新明星字典
-                    self.id2star[item["id"]] = unicode(item["name"]) # 更新ID->明星字典
-                    #print("id:%d %s" % (item["id"], item["name"]))
+                    name = unicode(item["name"].strip())
+                    self.star_dict[name] = 1 # 更新明星字典
+                    self.id2star[item["id"]] = name # 更新ID->明星字典
+                    #print("id:%d %s" % (item["id"], name)
         return self.id2star
 
     # 加载电影信息
@@ -60,13 +61,14 @@ class Film(object):
         data = json.load(f)
         for item in data:
             # 构造"影名词库"
-            name_cn = self.film_name(item["name_cn"])
+            name_cn = self.film_name(item["name_cn"].strip())
             if len(item["name_cn"]):
                 self.film_dict[name_cn] = 1 # 更新电影字典
                 if item.has_key("alias"):
                     if len(item["alias"]):
                         alias_list = item["alias"].split(",")
                         for alias in alias_list:
+                            alias = alias.strip()
                             if 0 == len(alias):
                                 continue
                             alias = unicode(alias)
@@ -97,6 +99,7 @@ class Film(object):
                     if len(item["name_cn"]):
                         stars = item["actor"].split(",")
                         for stars in stars:
+                            stars = stars.strip()
                             if 0 == len(star):
                                 continue
                             name = unicode(star)
@@ -111,7 +114,7 @@ class Film(object):
                 if len(item["name_cn"]):
                     roles = item["starring_play"].split(",")
                     for role in roles:
-                        role = unicode(role)
+                        role = unicode(role.strip())
                         if len(role):
                             self.role_dict[role] = 1 # 更新角色字典
                             if self.role2film.has_key(role):
