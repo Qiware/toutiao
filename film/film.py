@@ -136,6 +136,12 @@ class Film(object):
         if self.star_dict.has_key(name):
             return 1
         return 0
+    # 判断是否是电影
+    def is_alias(self, name):
+        name = unicode(name)
+        if self.alias_dict.has_key(name):
+            return 1
+        return 0
 
     # 判断是否是电影
     def is_film(self, name):
