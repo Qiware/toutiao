@@ -69,9 +69,10 @@ class Film(object):
                 self.film_dict[name_cn] = 1 # 更新电影字典
                 if not self.json_dict.has_key(name_cn):
                     self.json_dict[name_cn] = {}
-                    self.json_dict[name_cn]["role"] = {}
                     self.json_dict[name_cn]["actor"] = {}
                     self.json_dict[name_cn]["alias"] = {}
+                    self.json_dict[name_cn]["starring"] = {}
+                    self.json_dict[name_cn]["starring_play"] = {}
                 if item.has_key("alias"):
                     if len(item["alias"]):
                         alias_list = item["alias"].split(",")
@@ -130,7 +131,7 @@ class Film(object):
                         role = unicode(role.strip())
                         if len(role):
                             self.role_dict[role] = 1 # 更新角色字典
-                            self.json_dict[name_cn]["role"][name] = 1
+                            self.json_dict[name_cn]["starring_play"][role] = 1
                             if self.role2film.has_key(role):
                                 #print("role:%s film:%s" % (role, self.film_name(item["name_cn"])))
                                 self.role2film[role][name_cn] = 1 # 更新演员->电影字典
@@ -195,20 +196,21 @@ class Film(object):
     # 打印明星列表
     def print_json(self):
         print("[")
-        for name in self.json_dict:
+        for name_cn in self.json_dict:
             print("    {")
-            print("        \"name\":\"%s\"," % name)
+            print("        \"name_cn\":\"%s\"," % name_cn)
             print("        \"alias\":\""),
-            for alias in self.json_dict[name]["alias"]:
+            for alias in self.json_dict[name_cn]["alias"]:
                 print("%s," % alias),
             print("\",")
+            print("        \"starring\":\"\",")
             print("        \"actor\":\""),
-            for actor in self.json_dict[name]["actor"]:
+            for actor in self.json_dict[name_cn]["actor"]:
                 print("%s," % actor),
             print("\",")
-            print("        \"role\":\""),
-            for role in self.json_dict[name]["role"]:
-                print("%s," % role)
+            print("        \"starring_play\":\""),
+            for role in self.json_dict[name_cn]["starring_play"]:
+                print("%s," % role),
             print("\"")
             print("    },")
         print("]")
