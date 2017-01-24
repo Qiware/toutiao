@@ -18,6 +18,7 @@ type = sys.getfilesystemencoding()
 
 class Film(object):
     def __init__(self):
+        self.json_dict = {} # JSON字典 - unicode编码
         self.star_dict = {} # 明星字典(明星名) - unicode编码
         self.role_dict = {} # 角色字典(角色名) - unicode编码
         self.film_dict = {} # 电影字典(电影名) - unicode编码
@@ -62,8 +63,15 @@ class Film(object):
         for item in data:
             # 构造"影名词库"
             name_cn = self.film_name(item["name_cn"].strip())
+            if 0 == len(item["name_cn"]):
+                continue
             if len(item["name_cn"]):
                 self.film_dict[name_cn] = 1 # 更新电影字典
+                if not self.json_dict.has_key(name_cn):
+                    self.json_dict[name_cn] = {}
+                    self.json_dict[name_cn]["role"] = {}
+                    self.json_dict[name_cn]["actor"] = {}
+                    self.json_dict[name_cn]["alias"] = {}
                 if item.has_key("alias"):
                     if len(item["alias"]):
                         alias_list = item["alias"].split(",")
@@ -72,6 +80,7 @@ class Film(object):
                             if 0 == len(alias):
                                 continue
                             alias = unicode(alias)
+                            self.json_dict[name_cn]["alias"][alias] = 1
                             if not self.alias_dict.has_key(alias):
                                 self.alias_dict[alias] = {}
                             self.alias_dict[alias][name_cn] = 1 # 更新别名字典
@@ -86,6 +95,7 @@ class Film(object):
                         star_id = int(star)
                         if self.id2star.has_key(star_id):
                             name = self.id2star[star_id]
+                            self.json_dict[name_cn]["actor"][name] = 1
                             if self.star2film.has_key(name):
                                 self.star2film[name][name_cn] = 1 # 更新演员->电影字典
                                 continue
@@ -103,8 +113,9 @@ class Film(object):
                             if 0 == len(star):
                                 continue
                             name = unicode(star)
+                            self.json_dict[name_cn]["actor"][name] = 1
                             self.star_dict[name] = 1 # 更新明星字典
-                            print("actor:%s film:%s" % (name, name_cn))
+                            #print("actor:%s film:%s" % (name, name_cn))
                             if self.star2film.has_key(name):
                                 self.star2film[name][name_cn] = 1 # 更新演员->电影字典
                                 continue
@@ -119,6 +130,7 @@ class Film(object):
                         role = unicode(role.strip())
                         if len(role):
                             self.role_dict[role] = 1 # 更新角色字典
+                            self.json_dict[name_cn]["role"][name] = 1
                             if self.role2film.has_key(role):
                                 #print("role:%s film:%s" % (role, self.film_name(item["name_cn"])))
                                 self.role2film[role][name_cn] = 1 # 更新演员->电影字典
@@ -180,6 +192,26 @@ class Film(object):
         for star in self.star_dict:
             print(star)
 
+    # 打印明星列表
+    def print_json(self):
+        print("[")
+        for name in self.json_dict:
+            print("    {")
+            print("        \"name\":\"%s\"," % name)
+            print("        \"alias\":\""),
+            for alias in self.json_dict[name]["alias"]:
+                print("%s," % alias),
+            print("\",")
+            print("        \"actor\":\""),
+            for actor in self.json_dict[name]["actor"]:
+                print("%s," % actor),
+            print("\",")
+            print("        \"role\":\""),
+            for role in self.json_dict[name]["role"]:
+                print("%s," % role)
+            print("\"")
+            print("    },")
+        print("]")
 if __name__ == "__main__":
     film = Film()
 
