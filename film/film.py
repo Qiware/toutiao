@@ -98,11 +98,13 @@ class Film(object):
                 if len(item["actor"]):
                     if len(item["name_cn"]):
                         stars = item["actor"].split(",")
-                        for stars in stars:
-                            stars = stars.strip()
+                        for star in stars:
+                            star = star.strip()
                             if 0 == len(star):
                                 continue
                             name = unicode(star)
+                            self.star_dict[name] = 1 # 更新明星字典
+                            print("actor:%s film:%s" % (name, name_cn))
                             if self.star2film.has_key(name):
                                 self.star2film[name][name_cn] = 1 # 更新演员->电影字典
                                 continue
@@ -172,6 +174,11 @@ class Film(object):
         if self.film_dict.has_key(name):
             return 1
         return 0
+
+    # 打印明星列表
+    def star_print(self):
+        for star in self.star_dict:
+            print(star)
 
 if __name__ == "__main__":
     film = Film()

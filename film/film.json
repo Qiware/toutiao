@@ -17,22 +17,26 @@
 	{
 		"name_cn" : "绝密1950",
 		"starring" : ",1699,2223,21375,3062144,3051820,",
-		"starring_play" : ""
+		"actor" : ",王新军,尔玛依娜,艾东,洪雁,舒耀瑄,唐敬睿,",
+		"starring_play" : "谍战,反动派,特殊小分队,绝密文件,绝对机密,夸父五零,国民党军队,"
 	},
 	{
 		"name_cn" : "杨光的快乐生活5",
 		"starring" : ",3057458,3479,3478,3058947,",
-		"starring_play" : ""
+		"actor" : "杨议,杨少华,",
+		"starring_play" : "杨光"
 	},
 	{
 		"name_cn" : "女孩冲冲冲",
 		"starring" : ",2538,540,1035,1067,1228,1244,",
+		"actor" : "井柏然,杨紫,黄圣依,杨子,保剑锋,刘仪伟,范小天,",
 		"starring_play" : ""
 	},
 	{
 		"name_cn" : "结婚十年",
 		"starring" : ",267,1351,1904,1977,2266,",
-		"starring_play" : ""
+		"actor" : "陈建斌,徐帆,史可,洪剑涛,牛莉,温玉娟,杨树泉,牛星丽,吴京安,肖雄,",
+		"starring_play" : "韩梦,贾平,周红,"
 	},
 	{
 		"name_cn" : "在那遥远的地方",
@@ -4129,7 +4133,7 @@
 	{
 		"name_cn" : "赌侠",
 		"starring" : ",3,285,3022577,",
-		"actor" : "星爷",
+		"actor" : "星爷,周星驰,刘德华,张敏,陈法蓉,吴孟达,达叔,",
 		"starring_play" : ""
 	},
 	{
@@ -4721,7 +4725,7 @@
 	{
 		"name_cn" : "赏金猎手",
 		"starring" : ",3057491,3022631,",
-		"starring_play" : ""
+		"starring_play" : "叶三天,黑社会,亡命徒"
 	},
 	{
 		"name_cn" : "消失的天猫座",
@@ -6132,11 +6136,6 @@
 	{
 		"name_cn" : "弹道",
 		"starring" : ",816,157,3052775,",
-		"starring_play" : ""
-	},
-	{
-		"name_cn" : "听说",
-		"starring" : ",1296,1622,1863,",
 		"starring_play" : ""
 	},
 	{
@@ -8328,7 +8327,7 @@
 	{
 		"name_cn" : "赌侠2上海滩赌圣",
 		"starring" : ",285,80,",
-		"actor" : "星爷",
+		"actor" : "星爷,周星驰,巩俐,吕良伟,向华强,吴君如,",
 		"starring_play" : ""
 	},
 	{
@@ -9159,8 +9158,8 @@
 	{
 		"name_cn" : "唐伯虎点秋香",
 		"starring" : ",80,848,285,1305,",
-		"actor" : "星爷",
-		"starring_play" : ",华太师,左青龙,右白虎,老牛在腰间,龙头在心口,人挡杀人,佛挡杀佛"
+		"actor" : "星爷,周星驰,巩俐,郑佩佩,苑琼丹,陈百祥,朱咪咪,林威,刘家辉,梁家仁,黄沾",
+		"starring_play" : ",华太师,左青龙,右白虎,老牛在腰间,龙头在心口,人挡杀人,佛挡杀佛,祝枝山,唐伯虎,秋香,石榴姐,华夫人,夺命书生,华太师,"
 	},
 	{
 		"name_cn" : "白发魔女传",
@@ -20607,6 +20606,7 @@
 	{
 		"name_cn" : "孤胆特工",
 		"starring" : ",10090,24185,18192,18998,3022736,",
+		"actor" : "元斌,金赛纶,坦纳永·王特拉库,金泰勋,李桢凡,金熙元",
 		"starring_play" : ""
 	},
 	{
@@ -22633,6 +22633,7 @@
 	},
 	{
 		"name_cn" : "生化危机4：来生",
+		"alias" : "生化危机4,生化危机：来生,生化危机来生",
 		"starring" : ",3058010,3055160,3057721,",
 		"starring_play" : ""
 	},
@@ -23985,7 +23986,7 @@
 	{
 		"name_cn" : "李小龙传奇",
 		"starring" : ",3053223,2403,10228,20506,3092,3579723,7831,3058696,3579724,13704,3105,3052117,3060994,2425,14578,3057,",
-		"starring_play" : ""
+		"starring_play" : "李小龙"
 	},
 	{
 		"name_cn" : "谍血危情",
@@ -25128,11 +25129,6 @@
 		"starring_play" : ""
 	},
 	{
-		"name_cn" : "爱",
-		"starring" : ",251,395,3052215,1296,2249,",
-		"starring_play" : ""
-	},
-	{
 		"name_cn" : "花样少男少女",
 		"starring" : ",3052679,1409,1454,3051613,3061803,",
 		"starring_play" : ""
@@ -25485,6 +25481,7 @@
 	},
 	{
 		"name_cn" : "生化危机3：灭绝",
+		"alias" : "生化危机3,生化危机：灭绝,生化危机灭绝",
 		"starring" : ",3055160,25828,8269,3058010,25829,",
 		"starring_play" : ""
 	},
@@ -25512,7 +25509,7 @@
 		"name_cn" : "功夫",
 		"starring" : ",285,3052471,2776,540,13436,",
 		"actor" : "星爷",
-		"starring_play" : ",火云邪神,包租婆,斧头帮"
+		"starring_play" : ",火云邪神,包租婆,斧头帮,找人单挑,"
 	},
 	{
 		"name_cn" : "燃情岁月",
@@ -26110,6 +26107,7 @@
 	},
 	{
 		"name_cn" : "生化危机2:启示录",
+		"alias" : "生化危机2,生化危机启示录,生化危机:启示录",
 		"starring" : ",3055160,3058012,25828,17828,3022634,",
 		"starring_play" : ""
 	},
@@ -27476,7 +27474,7 @@
 	{
 		"name_cn" : "英雄本色",
 		"starring" : ",179,697,166,15779,2208,9335,187,911,249,629,",
-		"starring_play" : ""
+		"starring_play" : "枫林阁"
 	},
 	{
 		"name_cn" : "英雄本色2",
@@ -29847,12 +29845,12 @@
 	{
 		"name_cn" : "李小龙的生与死",
 		"starring" : ",465,",
-		"starring_play" : ""
+		"starring_play" : "李小龙"
 	},
 	{
 		"name_cn" : "李小龙的生与死",
 		"starring" : ",465,",
-		"starring_play" : ""
+		"starring_play" : "李小龙"
 	},
 	{
 		"name_cn" : "精武门",
@@ -31634,7 +31632,7 @@
 		"starring_play" : ""
 	},
 	{
-		"name_cn" : "赌侠 1999",
+		"name_cn" : "赌侠1999",
 		"starring" : ",3,478,463,3058356,",
 		"starring_play" : ""
 	},
@@ -35293,6 +35291,7 @@
 	},
 	{
 		"name_cn" : "生化危机5：惩罚",
+		"alias" : "生化危机5,生化危机惩罚",
 		"starring" : ",3055160,135,3011152,",
 		"starring_play" : ""
 	},
@@ -38435,7 +38434,8 @@
 	{
 		"name_cn" : "厨子戏子痞子",
 		"starring" : ",248,131,148,12076,2155,4003,",
-		"starring_play" : ""
+		"actor" : "刘烨,张涵予,黄渤,梁静,田中千绘,",
+		"starring_play" : "虎烈拉,日军,北平城,厨子,戏子,痞子,曲线救国,愚人谍战,日本人"
 	},
 	{
 		"name_cn" : "爱情女仆",
@@ -40165,11 +40165,6 @@
 		"starring_play" : ""
 	},
 	{
-		"name_cn" : "爱",
-		"starring" : ",2014982,19498,606,2014983,",
-		"starring_play" : ""
-	},
-	{
 		"name_cn" : "烽火佳人",
 		"starring" : ",1734,3060,1180,1742,",
 		"starring_play" : ""
@@ -41048,11 +41043,6 @@
 	{
 		"name_cn" : "叶问",
 		"starring" : ",180,157,3023366,7082,19054,10686,20260,19192,25136,",
-		"starring_play" : ""
-	},
-	{
-		"name_cn" : "爱",
-		"starring" : ",27089,",
 		"starring_play" : ""
 	},
 	{
@@ -43508,7 +43498,8 @@
 	{
 		"name_cn" : "刘老庄八十二壮士",
 		"starring" : ",882,21310,3051932,14270,",
-		"starring_play" : ""
+		"actor" : "赵毅,刘鉴,白雨,池源,高郡伟 ",
+		"starring_play" : "八十二壮士,新四军,江苏淮阴,刘老庄,抗击日军,日军,抗日民主政权,"
 	},
 	{
 		"name_cn" : "四戒",
@@ -44709,7 +44700,7 @@
 	{
 		"name_cn" : "李小龙传",
 		"starring" : ",2012692,2012693,2012694,",
-		"starring_play" : ""
+		"starring_play" : "李小龙"
 	},
 	{
 		"name_cn" : "龙之心",
@@ -48032,7 +48023,7 @@
 	{
 		"name_cn" : "西柏坡2：英雄王二小",
 		"starring" : ",3058677,11875,3058678,",
-		"starring_play" : ""
+		"starring_play" : "王二小,西柏坡,日寇,抗日根据地,平山团,南滚龙村,"
 	},
 	{
 		"name_cn" : "爸爸去哪儿第一季",
@@ -51948,7 +51939,7 @@
 	{
 		"name_cn" : "江南爱情故事",
 		"starring" : ",35254,19921,3052743,1895,35255,",
-		"starring_play" : ""
+		"starring_play" : "江南古镇,雨莲,逃婚,"
 	},
 	{
 		"name_cn" : "女性瘾者：第一部",
@@ -55075,7 +55066,8 @@
 	{
 		"name_cn" : "功夫厨神",
 		"starring" : ",2029,3021881,1218,2146,10686,",
-		"starring_play" : ""
+		"actor" : ",洪金宝,洪天明,樊少皇,应采儿,吴建豪,加护亚依,",
+		"starring_play" : "龙建一,黄秉义,龙头刀法,龙头刀,帮厨阿良,黄继祖,黄继祖,龙须面,武术学校,"
 	},
 	{
 		"name_cn" : "二氧化碳",
@@ -61818,7 +61810,7 @@
 	{
 		"name_cn" : "珍珠港",
 		"starring" : ",3061431,3052734,3061434,3051994,3058501,3053070,889,17488,17702,",
-		"starring_play" : ""
+		"starring_play" : "三本五十六"
 	},
 	{
 		"name_cn" : "神秘村",
@@ -62544,6 +62536,7 @@
 	},
 	{
 		"name_cn" : "生化危机4：战神再生",
+		"alias" : "生化危机4,战神再生",
 		"starring" : ",3052549,3052558,3052559,3055160,3058010,3057721,3058012,3058015,3058018,",
 		"starring_play" : ""
 	},
@@ -72605,7 +72598,7 @@
 	{
 		"name_cn" : "走出西柏坡",
 		"starring" : ",10445,3060948,",
-		"starring_play" : ""
+		"starring_play" : "西柏坡"
 	},
 	{
 		"name_cn" : "芈月传",
@@ -73110,6 +73103,7 @@
 	},
 	{
 		"name_cn" : "红色警戒",
+		"alias" : "细细的红线",
 		"starring" : ",381,509,23033,3051677,10245,19267,19348,1069,",
 		"starring_play" : ""
 	},
@@ -84794,6 +84788,7 @@
 	},
 	{
 		"name_cn" : "生化危机6：终章",
+		"alias" : "生化危机6,生化危机：终章,生化危机终章",
 		"starring" : ",3055160,3058010,8269,3058015,3577441,3011989,",
 		"starring_play" : ""
 	},
@@ -89057,7 +89052,7 @@
 	{
 		"name_cn" : "漫画威龙",
 		"starring" : ",285,3053028,1305,1040,822,",
-		"actor" : "星爷",
+		"actor" : "星爷,周星驰,萧芳芳,,陈百祥,张敏,钟镇涛,萧芳芳",
 		"starring_play" : ""
 	},
 	{
@@ -89552,7 +89547,7 @@
 		"name_cn" : "审死官",
 		"starring" : ",285,756,15472,1605,",
 		"actor" : "星爷",
-		"starring_play" : ""
+		"starring_play" : "4988万票房"
 	},
 	{
 		"name_cn" : "勇士",
@@ -93952,6 +93947,7 @@
 	{
 		"name_cn" : "良心",
 		"starring" : ",491,1421,",
+		"actor" : "姜武,谢兰",
 		"starring_play" : ""
 	},
 	{
@@ -96479,8 +96475,9 @@
 	},
 	{
 		"name_cn" : "沙子怪物",
+		"alias" : "沙滩怪物",
 		"starring" : "",
-		"starring_play" : "沙滩怪物"
+		"starring_play" : ",沙滩边,不明生物,"
 	},
 	{
 		"name_cn" : "我爱我家",
@@ -96861,7 +96858,7 @@
     },
     {
         "name_cn" : "人类消失后的世界",
-        "alias" : "人类消失后",
+        "alias" : "人类消失后,人类灭亡后的世界,人类灭亡后,",
         "starring" : "",
         "starring_play" : ""
     },
@@ -97456,7 +97453,7 @@
         "name_cn" : "太平洋战争",
         "alias" : "",
         "starring" : "",
-        "starring_play" : "瓜达卡纳尔岛,斯莱治,巴斯龙,莱基,太平洋"
+        "starring_play" : "瓜达卡纳尔岛,斯莱治,巴斯龙,莱基,太平洋,中途岛战役,中途岛,美日对诀,美日对决,"
     },
     {
         "name_cn" : "夺命深渊",
@@ -98510,7 +98507,7 @@
         "name_cn" : "泰王纳黎萱",
         "alias" : "",
         "starring" : "",
-        "starring_play" : ""
+        "starring_play" : "泰王,纳黎萱,泰国人,缅甸人,缅甸,泰国,"
     },
     {
         "name_cn" : "活死人归来",
@@ -98760,12 +98757,6 @@
     },
     {
         "name_cn" : "瓦尔特保卫萨拉热窝",
-        "alias" : "",
-        "starring" : "",
-        "starring_play" : ""
-    },
-    {
-        "name_cn" : "生化危机6",
         "alias" : "",
         "starring" : "",
         "starring_play" : ""
@@ -99105,7 +99096,7 @@
     },
     {
         "name_cn" : "胎妖",
-        "alias" : "",
+        "alias" : "淫种",
         "starring" : "",
         "starring_play" : ""
     },
@@ -99573,11 +99564,11 @@
         "starring_play" : ""
     },
     {
-        "name_cn" : "金刚王之死亡救赎",
-        "alias" : "金刚王,死亡救赎,金刚王死亡救赎",
-        "alias" : "",
+        "name_cn" : "金刚王:死亡救赎",
+        "alias" : "金刚王,死亡救赎,金刚王死亡救赎,金刚王之死亡救赎",
         "starring" : "",
-        "starring_play" : ""
+        "actor" : "释延能,姜宝成,南贤俊,刘承俊,",
+        "starring_play" : "哈迪斯神社,哈迪斯,金刚神社,南少林宗师,顶级杀手,反抗日本侵略,狱霸金刚,铁穆雷,魔尸金刚,疯猿,冥神金刚,苍生大介,暴坛,伤坛,绝坛"
     },
     {
         "name_cn" : "金正恩仇录",
@@ -99927,5 +99918,298 @@
         "alias" : "",
         "starring" : "",
         "starring_play" : ""
+    },
+    {
+        "name_cn" : "杀妻总动员",
+        "alias" : "",
+        "starring" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "恐龙星球之末代杀手",
+        "alias" : "恐龙星球,末代杀手",
+        "starring" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "精灵宝可梦",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "松本梨香,大谷育江,上田佑司,三木真一郎,林原惠美,犬山犬子",
+        "starring_play" : "小火龙,火精灵,小次郎,皮卡丘,武藏,杰尼龟,妙蛙种子,妙蛙草,妙蛙花,"
+    },
+    {
+        "name_cn" : "孙子兵法",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ",破釜沉舟,孙膑,庞涓,鬼谷子,"
+    },
+    {
+        "name_cn" : "致命罗密欧",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "李连杰,艾莉雅,戴尔里林多,亨利欧",
+        "starring_play" : "韩星,翠茜·欧戴,艾赛克欧戴,孙楚,乔装逃狱,"
+    },
+    {
+        "name_cn" : "直捣东京",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : "东京湾"
+    },
+    {
+        "name_cn" : "目标东京",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "海军地狱猫",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "鱼雷出击",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "孤岛浴血战",
+        "alias" : "南太平洋大捷",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "硫磺岛浴血战",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "菲律宾浴血战",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "偷袭珍珠港",
+        "alias" : "虎虎虎",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : "珍珠港"
+    },
+    {
+        "name_cn" : "太平洋潜艇战",
+        "alias" : "太平洋喋血记,霸海双雄",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "太平洋航空作战",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "巴丹战役",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "复活岛",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "反攻缅甸",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "印第安纳波利斯历险记",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "飞虎群英",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : "飞虎队,美军援华"
+    },
+    {
+        "name_cn" : "硫磺岛的家书",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "珍珠港空袭",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "夏威夷大海战",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "血战冲绳岛",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "太平洋之鹰",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "太平洋之岚",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "神风特攻队",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "零式战斗机",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "决战航空队",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "大战末日",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "姬百合之塔",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "轰炸冲绳",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "联合舰队",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "动荡的昭和史",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "暴风女神",
+        "alias" : "魔女潜艇,潜艇风暴",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "男人的大和",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "为我们所爱的",
+        "alias" : "我愿为你赴死,吾为君亡",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "没有出口的海",
+        "alias" : "血海无涯",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : ""
+    },
+    {
+        "name_cn" : "丧尸围城:眺望塔",
+        "alias" : "丧尸围城之眺望塔,丧尸围城,丧尸围城之瞭望塔",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : "丧尸"
+    },
+    {
+        "name_cn" : "太阳之泪",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "",
+        "starring_play" : "海豹分队,尼日利亚,莱娜,特种兵,特种部队,军人,天职和道德之间作出选择,"
+    },
+    {
+        "name_cn" : "成成烽火之较量",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "何果轩,秦丽,张铎",
+        "starring_play" : "日军,绥东地区,大扫荡,八路军,刘振和,郭明志,疯狂扫荡,"
+    },
+    {
+        "name_cn" : "血战残阳",
+        "alias" : "",
+        "starring" : "",
+        "actor" : "杨竣羽,刘唱,李岩,周曈,周瞳,",
+        "starring_play" : "日军,侵华日军,太行山区,太行山,疯狂扫荡,大扫荡,山西长治,长治地区,屯留老爷山,老爷山,韩少峰,侦查小分队,"
     }
+
 ]
