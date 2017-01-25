@@ -37,6 +37,10 @@ def execl_val_to_str(table, row_idx, col_idx):
 class Parser(object):
     # 对象初始化
     def __init__(self):
+        self.url = ""
+        self.title = ""
+        self.gid = ""
+        self.iid = ""
         self.film_set = {}
 
     # 提取url中有效信息
@@ -53,6 +57,7 @@ class Parser(object):
 
     # 抓取评论信息
     def fetch_comment(self, url):
+        # 评论存储文件名
         try:
             fd = urllib2.urlopen(url)
             comment = fd.read()
@@ -68,16 +73,19 @@ class Parser(object):
             return "{}"
 
     # 分析评论数据
-    def analyze(self, url):
+    def analyze(self, film, url):
         # 获取评论数据
         comments = self.fetch_comment(url)
 
         # 逐行分析评论
         for comment in comments:
-            self.parse(film, comment.strip(), False)
+            self.parse(film, unicode(comment.strip()), False)
         film_name = "UNKNOWN"
         film_name_val = 0
         for key in parser.film_set.keys():
+            #if self.iid == "6359738027887030272":
+                #print("num:%d name:%s" % (parser.film_set[key], key))
+            #if film.film_dict.has_key(key.encode('utf-8')):
             print("num:%d name:%s" % (parser.film_set[key], key))
             if parser.film_set[key] > film_name_val:
                 film_name = key
@@ -85,56 +93,32 @@ class Parser(object):
 
         if film.is_star(film_name):
             print("star:%s" % (film_name))
+        #print("film name:%s" % (film_name))
         return film_name
+
+    def has_keyword(self, comment):
+        m = re.search("片名", comment)
+        if m:
+            return True
+
+        m = re.search("电影名", comment)
+        if m:
+            return True
+        return False
 
     # 评论数据分析
     def parse(self, film, comment, is_title):
         print("comment:%s" % comment)
-        # 规则匹配抽取
-        if is_title:
-            score = 8
-        else:
-            score = 5
+        # 是否有"片名、电影名"等关键字
+        has_keyword = self.has_keyword(comment)
 
-        idx = 0
-        split = re.split(r"《", comment.encode("utf-8"))
-        for text in split:
-            if 0 == idx % 2:
-                idx += 1
-                continue
-            idx += 1
-            name = re.split(r"》", text)
-            if name is None:
-                continue
-            film_name = unicode(name[0].strip())
-            print("%s" % film_name)
-            if self.film_set.has_key(film_name):
-                self.film_set[film_name] += score
-            else:
-                num = 0
-                film_list = film.film_list_by_alias(film_name)
-                for name in film_list:
-                    num += 1
-                    print("Get film by alias. alias:%s film:%s" % (film_name, name))
-                    if self.film_set.has_key(name):
-                        self.film_set[name] += score
-                    else:
-                        self.film_set[name] = score
-                if 0 == num:
-                    print("Not found film:%s" % film_name)
-                    self.film_set[film_name] = score
-                    if self.film_set.has_key(film_name):
-                        self.film_set[film_name] += score
-                    else:
-                        self.film_set[film_name] = score
-
-        # 词性标注处理
+        # 词性标注处理, 并抽取电影名、电影别名、角色名、演员名等，并给影片打分.
         result = pseg.cut(comment)
         for word, flag in result:
-            #print("word:%s flag:%s" % (word, flag))
+            print("word:%s flag:%s" % (word, flag))
             m = re.search("n", flag)
             if m is not None:
-                print("word:%s flag:%s" % (word, flag))
+                #print("word:%s flag:%s" % (word, flag))
                 # 是否是电影名称
                 if 1 == film.is_film(word):
                     print("This is film name. film:%s" % (word))
@@ -142,17 +126,21 @@ class Parser(object):
                         self.film_set[word] += 3
                     else:
                         self.film_set[word] = 3
-                elif 1 == film.is_alias(word):
-                    # 是否是别名名称
+                    if has_keyword:
+                        self.film_set[word] += 2
+                # 是否是别名名称
+                if 1 == film.is_alias(word):
                     film_list = film.film_list_by_alias(word)
                     for name in film_list:
                         print("Get film by alias. alias:%s film:%s" % (word, name))
                         if self.film_set.has_key(name):
-                            self.film_set[name] += 2
+                            self.film_set[name] += 3
                         else:
-                            self.film_set[name] = 2
+                            self.film_set[name] = 3
+                        if has_keyword:
+                            self.film_set[word] += 2
                 # 是否是演员名称
-                elif 1 == film.is_star(word):
+                if 1 == film.is_star(word):
                     film_list = film.film_list_by_star(word)
                     for name in film_list:
                         print("Get film by star. star:%s film:%s" % (word, name))
@@ -161,7 +149,7 @@ class Parser(object):
                         else:
                             self.film_set[name] = 1
                 # 是否是角色名称
-                elif 1 == film.is_role(word):
+                if 1 == film.is_role(word):
                     film_list = film.film_list_by_role(word)
                     for name in film_list:
                         print("Get film by role. role:%s film:%s" % (word, name))
@@ -169,6 +157,44 @@ class Parser(object):
                             self.film_set[name] += 2
                         else:
                             self.film_set[name] = 2
+        # 抽取《XXXXXXXX》中的,电影名或别名"XXXXXXXX"，并给影片额外加分.
+        if is_title:
+            score = 8
+        else:
+            score = 5
+
+        idx = 0
+        split = re.split(r"《", comment)
+        for text in split:
+            idx += 1
+            print("idx:%d text:%s" % (idx, text))
+            if 1 == idx % 2:
+                continue
+            idx += 1
+            name = re.split(r"》", text)
+            if name is None:
+                continue
+            film_name = unicode(name[0].strip())
+            print("%s" % film_name)
+            is_find = False
+            if 1 == film.is_film(film_name):
+                is_find = True
+                if self.film_set.has_key(film_name):
+                    self.film_set[film_name] += score
+                else:
+                    self.film_set[film_name] = score
+            if 1 == film.is_alias(film_name):
+                is_find = True
+                film_list = film.film_list_by_alias(film_name)
+                for name in film_list:
+                    print("Get film by alias. alias:%s film:%s" % (film_name, name))
+                    if self.film_set.has_key(name):
+                        self.film_set[name] += score
+                    else:
+                        self.film_set[name] = score
+            if is_find == False:
+                print("Not found film:%s" % film_name)
+                #self.film_set[film_name] = score
 # 加载用户字典
 def load_userdict():
     """
@@ -187,9 +213,9 @@ def load_userdict():
     jieba.load_userdict("./dict/dict.txt");
 
     # 电影信息
-    jieba.load_userdict("./film/film.list");
-    jieba.load_userdict("./film/star.list");
-    jieba.load_userdict("./film/role.list");
+    jieba.load_userdict("./film/list/film.list");
+    jieba.load_userdict("./film/list/star.list");
+    jieba.load_userdict("./film/list/role.list");
 
 def load_film_dict(fname):
     film_dict = {}
@@ -220,25 +246,19 @@ if __name__ == "__main__":
     film = Film()
 
     # 获取评论文件
-    if len(sys.argv) <= 1:
-        print("Please special url!")
-        exit(1)
-
-    url = sys.argv[1]
+    #fname = "./doc/影视－明星.xlsx"
+    url = ""
+    if len(sys.argv) > 1:
+        url = sys.argv[1]
 
     # 加载自定义分词库
     load_userdict();
 
     # 加载电影词典
     load_film_dict("./dict/film.txt") # 加载电影字典
-    film.load_star("./film/star.json")      # 加载演员字典
-    film.load_film("./film/film.json")      # 加载电影字典
+    film.load_film("./film/film.dict")  # 加载电影字典
 
-    #if row < 133:
-    #    continue
-    #if row > 134:
-    #    break
     parser = Parser()
-    film_name = parser.analyze(url) # 分析信息
+    film_name = parser.analyze(film, url) # 分析信息
 
-    print("name:%s url: %s" % (film_name, url))
+    print("url:%s film:%s" % (url, film_name))
