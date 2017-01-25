@@ -200,14 +200,6 @@ def load_userdict():
     """
     Load user dictionary
     """
-    # 姓名列表
-    jieba.load_userdict("./dict/name/amuse.txt");
-    jieba.load_userdict("./dict/name/sporter.txt");
-    jieba.load_userdict("./dict/name/politicians.txt");
-
-    # 体育项目
-    jieba.load_userdict("./dict/film.txt"); # 体育项目
-    jieba.load_userdict("./dict/sport.txt"); # 体育项目
 
     # 默认词典
     jieba.load_userdict("./dict/dict.txt");
@@ -255,7 +247,6 @@ if __name__ == "__main__":
     load_userdict();
 
     # 加载电影词典
-    load_film_dict("./dict/film.txt") # 加载电影字典
     film.load_film("./film/film.dict")  # 加载电影字典
 
     parser = Parser()
