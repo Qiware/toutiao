@@ -110,6 +110,7 @@ class Parser(object):
         m = re.search("电影名", comment)
         if m:
             return True
+
         return False
 
     # 评论数据分析
