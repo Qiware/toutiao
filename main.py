@@ -157,6 +157,8 @@ class Parser(object):
                         self.film_set[word] += 2
                     if prev_is_book_mark:
                         self.film_set[word] += score
+                    if is_title:
+                        self.film_set[word] += 2
                 # 是否是别名名称
                 if 1 == film.is_alias(word):
                     film_list = film.film_list_by_alias(word)
@@ -170,6 +172,8 @@ class Parser(object):
                             self.film_set[name] += 2
                         if prev_is_book_mark:
                             self.film_set[name] += score                # 是否是演员名称
+                        if is_title:
+                            self.film_set[name] += 2
                 if 1 == film.is_star(word):
                     film_list = film.film_list_by_star(word)
                     for name in film_list:
@@ -178,6 +182,8 @@ class Parser(object):
                             self.film_set[name] += 1
                         else:
                             self.film_set[name] = 1
+                        if is_title:
+                            self.film_set[name] += 2
                 # 是否是角色名称
                 if 1 == film.is_role(word):
                     film_list = film.film_list_by_role(word)
@@ -187,6 +193,8 @@ class Parser(object):
                             self.film_set[name] += 2
                         else:
                             self.film_set[name] = 2
+                        if is_title:
+                            self.film_set[name] += 2
 # 加载用户字典
 def load_userdict():
     """
